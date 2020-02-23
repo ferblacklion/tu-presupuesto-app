@@ -10,20 +10,25 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
+    "firebase": "^7.9.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-redux": "^7.2.0",
     "react-scripts": "3.4.0",
+    "redux": "^4.0.5",
+    "redux-devtools": "^3.5.0",
+    "redux-thunk": "^2.3.0",
     "typescript": "~3.7.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "precommit": "NODE_ENV=production lint-staged"
+    "precommit": "lint-staged"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
+    "*.{js,jsx}": [
       "pretty-quick --staged",
       "eslint src/ --fix",
       "git add"
@@ -56,5 +61,10 @@
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
     "pretty-quick": "^2.0.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
