@@ -7,15 +7,6 @@ function App() {
       console.log(user);
     });
   };
-  const h = 'adfasf';
-
-  // bad
-  const bad = {
-    foo: 3,
-    bar: 4,
-    'data-blah': 5
-  };
-  console.log(bad, h);
 
   return (
     <div>
