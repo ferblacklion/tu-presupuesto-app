@@ -1,11 +1,17 @@
 import React from 'react';
-import { loginWithGoogle, getUserSettings } from '../services/firebase';
+import { getUserSettings } from '../services/firebase';
+import { connect } from 'react-redux';
+import { IUser } from '../definition/IUser';
+import { RootState } from '../redux/store';
+import { loginUserAction } from '../redux/user-duck';
 
-function Home() {
+export interface IHomeProps {
+  user: IUser | null;
+  loginUserAction: any;
+}
+function Home({ user, loginUserAction }: IHomeProps) {
   const login = () => {
-    loginWithGoogle().then(user => {
-      console.log(user);
-    });
+    loginUserAction();
   };
 
   const getSettings = () => {
@@ -16,11 +22,29 @@ function Home() {
 
   return (
     <div>
-      <h1>hello</h1>
-      <button onClick={login}>LOGIN</button>
+      {user?.uid && (
+        <div>
+          <h1>Hello {user?.displayName}</h1>
+          <img
+            width="60"
+            height="65"
+            src={user?.photoURL || ''}
+            alt={user?.displayName || ''}
+          />
+        </div>
+      )}
+      {!user?.uid && <button onClick={login}>LOGIN</button>}
       <button onClick={getSettings}>GET SETTINGS</button>
     </div>
   );
 }
 
-export default Home;
+function mapStateToProps(state: RootState) {
+  return { user: state.user.userData };
+}
+
+const dispatchToProps = {
+  loginUserAction
+};
+
+export default connect(mapStateToProps, dispatchToProps)(Home);

@@ -37,7 +37,6 @@ export function loginWithGoogle() {
     .auth()
     .signInWithPopup(provider)
     .then(snap => {
-      console.log(snap);
       return snap.user;
     });
 }
