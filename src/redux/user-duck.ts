@@ -1,6 +1,7 @@
 import { IUser } from '../definition/IUser';
 import { loginWithGoogle } from '../services/firebase';
 import { Dispatch, Store } from 'redux';
+import { saveStore, getStorage } from '../utils';
 
 /**
  * CONSTANTS
@@ -18,6 +19,7 @@ const initialState: IUserState = {
 const LOGGED_IN = 'LOGGED_IN';
 const LOGGED_OUT = 'LOGGED_OUT';
 const LOGGED_IN_SUCCESS = 'LOGGED_IN_SUCCESS';
+const LOGGED_WAS_SUCCESS = 'LOGGED_WAS_SUCCESS';
 const LOGGED_IN_ERROR = 'LOGGED_IN_ERROR';
 
 interface LoggedInAction {
@@ -32,11 +34,12 @@ interface LoggedInErrorAction {
   payload: {
     fetching: boolean;
     error: string;
+    loggedIn: boolean;
   };
 }
 
 interface LoggedInSuccessAction {
-  type: typeof LOGGED_IN_SUCCESS;
+  type: typeof LOGGED_IN_SUCCESS | typeof LOGGED_WAS_SUCCESS;
   payload: {
     userData: IUser;
     fetching: false;
@@ -65,8 +68,9 @@ export default function reducer(
 ) {
   switch (action.type) {
     case LOGGED_IN:
-      return { ...state, fetching: true };
+      return { ...state, fetching: true, loggedIn: false };
     case LOGGED_IN_SUCCESS:
+    case LOGGED_WAS_SUCCESS:
       return {
         ...state,
         userData: action.payload.userData,
@@ -77,6 +81,7 @@ export default function reducer(
       return {
         ...state,
         fetching: false,
+        loggedIn: false,
         error: action.payload.error
       };
     default:
@@ -84,22 +89,44 @@ export default function reducer(
   }
 }
 
-function saveStore(data: any) {
-  console.log(data);
-
-  localStorage.setItem('user', JSON.stringify(data));
-}
 /**
  * ACTIONS (ACTION CREATORS)
  */
 
+/**
+ * loginUserAction
+ */
 export const loginUserAction = () => (
   dispatch: Dispatch,
   getState: () => Store
 ) => {
-  dispatch({ type: LOGGED_IN });
   return loginWithGoogle()
     .then(user => {
+      const userData = {
+        uid: user?.uid,
+        displayName: user?.displayName,
+        photoURL: user?.photoURL,
+        email: user?.email
+      };
+
+      dispatch({ type: LOGGED_IN_SUCCESS, payload: { userData } });
+      saveStore(getState(), 'userData');
+    })
+    .catch(e => {
+      console.log(e.message);
+      dispatch({ type: LOGGED_IN_ERROR, payload: { error: e.message } });
+    });
+};
+
+/**
+ * loginFromStoreAction action
+ */
+export const loginFromStoreAction = () => (dispatch: Dispatch) => {
+  dispatch({ type: LOGGED_IN });
+  const savedUser = getStorage('userData');
+
+  if (Object.keys(savedUser).length) {
+    return Promise.resolve(savedUser.user.userData).then(user => {
       const userData: IUser = {
         uid: user?.uid,
         displayName: user?.displayName,
@@ -108,12 +135,14 @@ export const loginUserAction = () => (
       };
 
       dispatch({ type: LOGGED_IN_SUCCESS, payload: { userData } });
-      saveStore(getState());
-    })
-    .catch(e => {
-      console.log(e.message);
-      dispatch({ type: LOGGED_IN_ERROR, payload: { error: e.message } });
     });
+  }
+  return Promise.reject().catch(() => {
+    dispatch({
+      type: LOGGED_IN_ERROR,
+      payload: { error: 'waiting for login' }
+    });
+  });
 };
 
 /**

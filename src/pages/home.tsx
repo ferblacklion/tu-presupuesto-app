@@ -1,15 +1,24 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { getUserSettings } from '../services/firebase';
 import { connect } from 'react-redux';
 import { IUser } from '../definition/IUser';
 import { RootState } from '../redux/store';
-import { loginUserAction } from '../redux/user-duck';
+import { loginUserAction, loginFromStoreAction } from '../redux/user-duck';
 
 export interface IHomeProps {
   user: IUser | null;
-  loginUserAction: any;
+  loginUserAction: () => Promise<void>;
+  loginFromStoreAction: () => Promise<void>;
 }
-function Home({ user, loginUserAction }: IHomeProps) {
+function Home({ user, loginUserAction, loginFromStoreAction }: IHomeProps) {
+  const initFetch = useCallback(() => {
+    loginFromStoreAction();
+  }, [loginFromStoreAction]);
+
+  useEffect(() => {
+    initFetch();
+  }, [initFetch]);
+
   const login = () => {
     loginUserAction();
   };
@@ -31,6 +40,9 @@ function Home({ user, loginUserAction }: IHomeProps) {
             src={user?.photoURL || ''}
             alt={user?.displayName || ''}
           />
+          <a href="/settings" title="settings">
+            Settings
+          </a>
         </div>
       )}
       {!user?.uid && <button onClick={login}>LOGIN</button>}
@@ -44,7 +56,8 @@ function mapStateToProps(state: RootState) {
 }
 
 const dispatchToProps = {
-  loginUserAction
+  loginUserAction,
+  loginFromStoreAction
 };
 
 export default connect(mapStateToProps, dispatchToProps)(Home);
