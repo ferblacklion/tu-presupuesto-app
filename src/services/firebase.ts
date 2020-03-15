@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import { ISettings } from '../definition/ISettings';
 declare interface IFirebaseConfig {
   apiKey: string;
   authDomain: string;
@@ -46,11 +47,20 @@ function getfirebaseDb() {
   return firebaseClient.firestore();
 }
 
-export function getUserSettings() {
+const SETTINGS_COLLECTION = 'settings';
+
+export function getUserSettings(userId: string = '0') {
   const db = getfirebaseDb();
-  const settings = db.collection('settings').doc('25tgxVbIHsFIPHTKSpt1');
+  const settings = db.collection(SETTINGS_COLLECTION).doc(userId);
 
   return settings.get().then(setting => {
     return setting.data();
   });
+}
+
+export function saveUserSettings(userId: string, settings: ISettings) {
+  const db = getfirebaseDb();
+  const settingsCol = db.collection(SETTINGS_COLLECTION).doc(userId);
+
+  return settingsCol.set(settings);
 }

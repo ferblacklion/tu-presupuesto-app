@@ -1,5 +1,4 @@
 import React, { useEffect, useCallback } from 'react';
-import { getUserSettings } from '../services/firebase';
 import { connect } from 'react-redux';
 import { IUser } from '../definition/IUser';
 import { RootState } from '../redux/store';
@@ -23,12 +22,6 @@ function Home({ user, loginUserAction, loginFromStoreAction }: IHomeProps) {
     loginUserAction();
   };
 
-  const getSettings = () => {
-    getUserSettings().then(r => {
-      console.log(r);
-    });
-  };
-
   return (
     <div>
       {user?.uid && (
@@ -40,13 +33,15 @@ function Home({ user, loginUserAction, loginFromStoreAction }: IHomeProps) {
             src={user?.photoURL || ''}
             alt={user?.displayName || ''}
           />
-          <a href="/settings" title="settings">
-            Settings
-          </a>
+          <p>pages:</p>
+          <p>
+            <a href="/settings" title="settings">
+              Settings
+            </a>
+          </p>
         </div>
       )}
       {!user?.uid && <button onClick={login}>LOGIN</button>}
-      <button onClick={getSettings}>GET SETTINGS</button>
     </div>
   );
 }
