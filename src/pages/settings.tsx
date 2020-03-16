@@ -1,6 +1,10 @@
-import React, { useRef, useCallback, useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { connect } from 'react-redux';
-import { saveSettingsAction, getSettingsAction } from '../redux/settings-duck';
+import {
+  saveSettingsAction,
+  getSettingsAction,
+  ISettingsState
+} from '../redux/settings-duck';
 import { RootState } from '../redux/store';
 import { IUser } from '../definition/IUser';
 import { loginFromStoreAction } from '../redux/user-duck';
@@ -11,66 +15,79 @@ export declare interface ISettingsProps {
   user: IUser | null;
   saveSettingsAction: (uID: string, s: ISettings) => Promise<void>;
   getSettingsAction: (uID: string) => Promise<void>;
-  settings: ISettings;
+  settings: ISettingsState;
 }
 
-const Settings = ({
+const SettingsPage = ({
   user,
   loginFromStoreAction,
   saveSettingsAction,
   getSettingsAction,
   settings
 }: ISettingsProps) => {
-  const cutOffDate = useRef<HTMLInputElement>(null);
-  const totalAmount = useRef<HTMLInputElement>(null);
+  const cutOffDateElement = useRef<HTMLInputElement>(null);
+  const totalAmountElement = useRef<HTMLInputElement>(null);
+  const [cutOffDate, setCutOffDate] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
 
-  const initFetch = useCallback(() => {
-    loginFromStoreAction();
+  useEffect(() => {
+    const initFetch = () => {
+      loginFromStoreAction();
+    };
+    initFetch();
   }, [loginFromStoreAction]);
 
   useEffect(() => {
-    if (user?.uid) {
-      getSettingsAction(user?.uid);
+    if (user !== null) {
+      getSettingsAction(user.uid || '0');
     }
   }, [getSettingsAction, user]);
 
   useEffect(() => {
-    initFetch();
-  }, [initFetch]);
+    setCutOffDate(settings.cutOffDate);
+    setTotalAmount(settings.totalAmount);
+  }, [settings]);
 
   const saveUserData = () => {
-    const data: ISettings = {
-      cutOffDate: Number(cutOffDate.current?.value) || 31,
-      totalAmount: Number(totalAmount.current?.value) || 0
+    const currentUserSettings: ISettings = {
+      cutOffDate: cutOffDateElement.current?.value
+        ? Number(cutOffDateElement.current?.value)
+        : 31,
+      totalAmount: totalAmountElement.current?.value
+        ? Number(totalAmountElement.current.value)
+        : 5000
     };
+    console.log(currentUserSettings);
 
-    const userId = user?.uid ? user?.uid : '0';
-    saveSettingsAction(userId, data);
+    saveSettingsAction(user?.uid || '0', currentUserSettings);
   };
-
-  if (cutOffDate.current) {
-    cutOffDate.current.value = settings.cutOffDate.toString();
-  }
-  if (totalAmount.current) {
-    totalAmount.current.value = settings.totalAmount.toString();
-  }
-  console.log(settings);
 
   return (
     <div>
       <h1>Settings</h1>
-
-      <>
-        <p>
-          <label htmlFor="">Fecha corte:</label>
-          <input ref={cutOffDate} type="text" defaultValue={0} />
-        </p>
-        <p>
-          <label htmlFor="">Monto total:</label>
-          <input ref={totalAmount} type="text" defaultValue={0} />
-        </p>
-        <button onClick={saveUserData}>Guardar</button>
-      </>
+      {settings.success && (
+        <>
+          <p>
+            <label htmlFor="">Fecha corte:</label>
+            <input
+              ref={cutOffDateElement}
+              type="text"
+              name="cut-off-date"
+              defaultValue={cutOffDate}
+            />
+          </p>
+          <p>
+            <label htmlFor="">Monto total:</label>
+            <input
+              ref={totalAmountElement}
+              type="text"
+              name="total-amount"
+              defaultValue={totalAmount}
+            />
+          </p>
+          <button onClick={saveUserData}>Guardar</button>
+        </>
+      )}
     </div>
   );
 };
@@ -87,4 +104,4 @@ const dispatchToProps = {
   getSettingsAction
 };
 
-export default connect(mapStateToProps, dispatchToProps)(Settings);
+export default connect(mapStateToProps, dispatchToProps)(SettingsPage);

@@ -5,10 +5,15 @@ import { Dispatch } from 'redux';
 /**
  * CONSTANTS
  */
-const initialState: ISettings = {
+export declare interface ISettingsState extends ISettings {
+  success: boolean;
+}
+const initialState: ISettingsState = {
   totalAmount: 0,
-  cutOffDate: 0
+  cutOffDate: 0,
+  success: false
 };
+
 export const GET_SETTINGS = 'GET_SETTINGS';
 export type GET_SETTINGS_TYPE = typeof GET_SETTINGS;
 
@@ -64,10 +69,10 @@ export default function reducer(
       return { ...action.payload };
 
     case SETTINGS_FETCHING:
-      return { ...state, fetching: true };
+      return { ...state, success: true };
 
     case FETCHING_ERROR:
-      return { ...state, fetching: false };
+      return { ...state, success: false };
 
     default:
       return { ...state };
@@ -85,8 +90,10 @@ export const getSettingsAction = (userId: string) => async (
   try {
     const settings = await getUserSettings(userId);
     if (!settings) return;
+    console.log('get settins actions');
 
     dispatch({ type: GET_SETTINGS, payload: settings });
+    dispatch({ type: SETTINGS_FETCHING, fetching: true });
   } catch (error) {
     console.log(error);
   }

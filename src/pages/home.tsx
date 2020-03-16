@@ -9,7 +9,7 @@ export interface IHomeProps {
   loginUserAction: () => Promise<void>;
   loginFromStoreAction: () => Promise<void>;
 }
-function Home({ user, loginUserAction, loginFromStoreAction }: IHomeProps) {
+function HomePage({ user, loginUserAction, loginFromStoreAction }: IHomeProps) {
   const initFetch = useCallback(() => {
     loginFromStoreAction();
   }, [loginFromStoreAction]);
@@ -55,4 +55,4 @@ const dispatchToProps = {
   loginFromStoreAction
 };
 
-export default connect(mapStateToProps, dispatchToProps)(Home);
+export default connect(mapStateToProps, dispatchToProps)(HomePage);
