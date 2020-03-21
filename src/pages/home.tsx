@@ -42,6 +42,21 @@ function HomePage({ user, loginUserAction, loginFromStoreAction }: IHomeProps) {
         </div>
       )}
       {!user?.uid && <button onClick={login}>LOGIN</button>}
+      <div>
+        <h2>Agregar:</h2>
+        <p>
+          <label htmlFor="new-item">Nombre del gasto </label>
+          <input id="new-item" type="text" /> <br />
+        </p>
+        <p>
+          <label htmlFor="precio">Precio </label>
+          <input id="precio" type="text" />
+        </p>
+        <br />
+        <p>
+          <button>+</button>
+        </p>
+      </div>
     </div>
   );
 }
