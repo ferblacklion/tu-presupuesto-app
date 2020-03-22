@@ -26,7 +26,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "precommit": "lint-staged",
     "deploy:assets": "yarn build && firebase deploy --only hosting"
   },
   "lint-staged": {

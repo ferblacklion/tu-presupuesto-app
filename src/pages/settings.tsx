@@ -65,28 +65,29 @@ const SettingsPage = ({
   return (
     <div>
       <h1>Settings</h1>
-
-      <>
-        <p>
-          <label htmlFor="">Fecha corte:</label>
-          <input
-            ref={cutOffDateElement}
-            type="text"
-            name="cut-off-date"
-            defaultValue={cutOffDate}
-          />
-        </p>
-        <p>
-          <label htmlFor="">Monto total:</label>
-          <input
-            ref={totalAmountElement}
-            type="text"
-            name="total-amount"
-            defaultValue={totalAmount}
-          />
-        </p>
-        <button onClick={saveUserData}>Guardar</button>
-      </>
+      {settings.success && (
+        <>
+          <p>
+            <label htmlFor="">Fecha corte:</label>
+            <input
+              ref={cutOffDateElement}
+              type="text"
+              name="cut-off-date"
+              defaultValue={cutOffDate}
+            />
+          </p>
+          <p>
+            <label htmlFor="">Monto total:</label>
+            <input
+              ref={totalAmountElement}
+              type="text"
+              name="total-amount"
+              defaultValue={totalAmount}
+            />
+          </p>
+          <button onClick={saveUserData}>Guardar</button>
+        </>
+      )}
     </div>
   );
 };

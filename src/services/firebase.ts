@@ -53,9 +53,16 @@ export function getUserSettings(userId: string = '0') {
   const db = getfirebaseDb();
   const settings = db.collection(SETTINGS_COLLECTION).doc(userId);
 
-  return settings.get().then(setting => {
-    return setting.data();
-  });
+  return settings
+    .get()
+    .then(setting => {
+      console.log(setting.data());
+
+      return setting.data();
+    })
+    .catch(e => {
+      console.log(e);
+    });
 }
 
 export function saveUserSettings(userId: string, settings: ISettings) {
