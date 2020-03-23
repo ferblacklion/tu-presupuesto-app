@@ -13,6 +13,10 @@ import {
 } from '../redux/payments-duck';
 import { isNumber } from 'util';
 import NumberFormat from 'react-number-format';
+import PaymentsStatus from '../components/payments-status';
+import { ISettings } from '../definition/ISettings';
+import { getSettingsAction } from '../redux/settings-duck';
+import formatCurrency from '../utils/format-currency';
 
 export interface IHomeProps {
   user: IUser | null;
@@ -23,6 +27,8 @@ export interface IHomeProps {
   getPaymentsAction: (userId: string) => Promise<void>;
   deletePaymentsAction: (index: number) => any;
   payments: IPayments;
+  settings: ISettings;
+  getSettingsAction: (userId: string) => Promise<void>;
 }
 function HomePage({
   user,
@@ -32,7 +38,9 @@ function HomePage({
   addPaymentAction,
   payments,
   getPaymentsAction,
-  deletePaymentsAction
+  deletePaymentsAction,
+  settings,
+  getSettingsAction
 }: IHomeProps) {
   const costNameInput = useRef<HTMLInputElement>(null);
   let costInput: any = null;
@@ -83,8 +91,12 @@ function HomePage({
   };
 
   useEffect(() => {
-    if (user && user.uid) getPaymentsAction(user.uid);
-  }, [user, getPaymentsAction]);
+    if (user && user.uid) {
+      getPaymentsAction(user.uid);
+      getSettingsAction(user.uid);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   return (
     <div>
@@ -138,7 +150,7 @@ function HomePage({
               <ul>
                 {payments.payments.map((p, i) => (
                   <li key={i}>
-                    {p.name} --- {p.cost}{' '}
+                    {p.name} ===> {formatCurrency(p.cost)}{' '}
                     <a href="/" data-index={i} onClick={deleteCostItem}>
                       Eliminar
                     </a>
@@ -147,6 +159,8 @@ function HomePage({
               </ul>
             </div>
           </div>
+
+          <PaymentsStatus settings={settings} payments={payments} />
         </div>
       )}
       {!user?.uid && <button onClick={login}>LOGIN</button>}
@@ -155,7 +169,11 @@ function HomePage({
 }
 
 function mapStateToProps(state: RootState) {
-  return { user: state.user.userData, payments: state.payments };
+  return {
+    user: state.user.userData,
+    payments: state.payments,
+    settings: state.settings
+  };
 }
 
 const dispatchToProps = {
@@ -164,7 +182,8 @@ const dispatchToProps = {
   savePaymentAction,
   addPaymentAction,
   getPaymentsAction,
-  deletePaymentsAction
+  deletePaymentsAction,
+  getSettingsAction
 };
 
 export default connect(mapStateToProps, dispatchToProps)(HomePage);

@@ -38,7 +38,7 @@ const SettingsPage = ({
   }, [loginFromStoreAction]);
 
   useEffect(() => {
-    if (user !== null) {
+    if (user) {
       getSettingsAction(user.uid || '0');
     }
   }, [getSettingsAction, user]);
@@ -57,7 +57,6 @@ const SettingsPage = ({
         ? Number(totalAmountElement.current.value)
         : 5000
     };
-    console.log(currentUserSettings);
 
     saveSettingsAction(user?.uid || '0', currentUserSettings);
   };
