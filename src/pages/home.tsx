@@ -11,6 +11,8 @@ import {
   getPaymentsAction,
   deletePaymentsAction
 } from '../redux/payments-duck';
+import { isNumber } from 'util';
+import NumberFormat from 'react-number-format';
 
 export interface IHomeProps {
   user: IUser | null;
@@ -33,7 +35,8 @@ function HomePage({
   deletePaymentsAction
 }: IHomeProps) {
   const costNameInput = useRef<HTMLInputElement>(null);
-  const costInput = useRef<HTMLInputElement>(null);
+  let costInput: any = null;
+  let costValueInput = '';
 
   const initFetch = useCallback(() => {
     loginFromStoreAction();
@@ -51,15 +54,15 @@ function HomePage({
     if (!user) return;
     const singlePayment: IPayment = {
       name: costNameInput?.current?.value || '',
-      cost: !isNaN(Number(costInput?.current?.value))
-        ? Number(costInput?.current?.value)
+      cost: !isNaN(Number(costInput.state.numAsString))
+        ? Number(costInput.state.numAsString)
         : 0
     };
 
     if (singlePayment.name.trim() && singlePayment.cost > 0) {
       addPaymentAction(singlePayment).then(() => {
         if (costNameInput.current) costNameInput.current.value = '';
-        if (costInput.current) costInput.current.value = '';
+        costValueInput = '';
       });
     }
   };
@@ -74,7 +77,9 @@ function HomePage({
   const deleteCostItem = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const index = Number(e.currentTarget.getAttribute('data-index'));
-    deletePaymentsAction(index);
+    if (isNumber(index)) {
+      deletePaymentsAction(index);
+    }
   };
 
   useEffect(() => {
@@ -102,11 +107,26 @@ function HomePage({
             <h2>Agregar:</h2>
             <p>
               <label htmlFor="cost-name">Nombre del gasto </label>
-              <input ref={costNameInput} id="cost-name" type="text" /> <br />
+              <input
+                minLength={3}
+                ref={costNameInput}
+                id="cost-name"
+                type="text"
+              />{' '}
+              <br />
             </p>
             <p>
               <label htmlFor="cost">Precio </label>
-              <input ref={costInput} id="cost" type="text" />
+              <NumberFormat
+                ref={(el: any) => (costInput = el)}
+                decimalScale={2}
+                thousandSeparator={true}
+                id="cost"
+                prefix={'Q'}
+                value={costValueInput}
+                inputMode={'decimal'}
+                allowNegative={false}
+              />
             </p>
             <br />
             <p>
