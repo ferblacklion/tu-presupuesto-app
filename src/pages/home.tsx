@@ -8,7 +8,8 @@ import {
   savePaymentAction,
   IPayment,
   addPaymentAction,
-  getPaymentsAction
+  getPaymentsAction,
+  deletePaymentsAction
 } from '../redux/payments-duck';
 
 export interface IHomeProps {
@@ -18,6 +19,7 @@ export interface IHomeProps {
   savePaymentAction: (userId: string, p: IPayments) => Promise<void>;
   addPaymentAction: (p: IPayment) => Promise<void>;
   getPaymentsAction: (userId: string) => Promise<void>;
+  deletePaymentsAction: (index: number) => any;
   payments: IPayments;
 }
 function HomePage({
@@ -27,7 +29,8 @@ function HomePage({
   savePaymentAction,
   addPaymentAction,
   payments,
-  getPaymentsAction
+  getPaymentsAction,
+  deletePaymentsAction
 }: IHomeProps) {
   const costNameInput = useRef<HTMLInputElement>(null);
   const costInput = useRef<HTMLInputElement>(null);
@@ -70,13 +73,11 @@ function HomePage({
 
   const deleteCostItem = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    const index = e.target;
-    console.log('delete', index);
+    const index = Number(e.currentTarget.getAttribute('data-index'));
+    deletePaymentsAction(index);
   };
 
   useEffect(() => {
-    console.log('user', user);
-
     if (user && user.uid) getPaymentsAction(user.uid);
   }, [user, getPaymentsAction]);
 
@@ -142,7 +143,8 @@ const dispatchToProps = {
   loginFromStoreAction,
   savePaymentAction,
   addPaymentAction,
-  getPaymentsAction
+  getPaymentsAction,
+  deletePaymentsAction
 };
 
 export default connect(mapStateToProps, dispatchToProps)(HomePage);

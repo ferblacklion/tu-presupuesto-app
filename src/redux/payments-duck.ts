@@ -13,6 +13,7 @@ const initialState: IPayments = {
 export const SAVE_PAYMENT = 'SAVE_PAYMENT';
 export const GET_PAYMENT = 'GET_PAYMENT';
 export const ADD_PAYMENT = 'ADD_PAYMENT';
+export const DELETE_PAYMENT = 'DELETE_PAYMENT';
 export declare interface IPayment {
   name: string;
   cost: number;
@@ -36,10 +37,16 @@ export interface IAddPaymentAction {
   payload: IPayment;
 }
 
+export interface IDeletePaymentAction {
+  type: typeof DELETE_PAYMENT;
+  payload: { index: number };
+}
+
 type paymentsActionsTypes =
   | ISavePaymentAction
   | IAddPaymentAction
-  | IGetPaymentAction;
+  | IGetPaymentAction
+  | IDeletePaymentAction;
 
 /**
  * REDUCERS
@@ -54,10 +61,14 @@ export default function reducer(
     case SAVE_PAYMENT:
       return { ...action.payload };
     case ADD_PAYMENT:
-      const payments = [...state.payments, action.payload];
-      return { ...state, payments };
+      return { ...state, payments: [...state.payments, action.payload] };
     case GET_PAYMENT:
       return { ...action.payload };
+    case DELETE_PAYMENT:
+      const paymentsFiltered = state.payments.filter(
+        (payment: IPayment, i: number) => i !== action.payload.index
+      );
+      return { ...state, payments: paymentsFiltered };
     default:
       return { ...state };
   }
@@ -95,4 +106,8 @@ export const getPaymentsAction = (userId: string) => (dispatch: Dispatch) => {
     .catch(e => {
       console.log(e);
     });
+};
+
+export const deletePaymentsAction = (index: number) => (dispatch: Dispatch) => {
+  dispatch({ type: DELETE_PAYMENT, payload: { index } });
 };
