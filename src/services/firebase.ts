@@ -58,9 +58,11 @@ export function getUserSettingsService(userId: string = '0') {
   return settings
     .get()
     .then(setting => {
-      console.log('get successfully ', setting.data());
+      const initialState: ISettings = { totalAmount: 0, cutOffDate: 0 };
+      const result = setting.data() || initialState;
+      console.log('get successfully ', result);
 
-      return setting.data();
+      return result;
     })
     .catch(e => {
       console.log(e);
