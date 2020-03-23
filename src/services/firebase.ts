@@ -2,6 +2,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import { ISettings } from '../definition/ISettings';
+import { IPayments } from '../redux/payments-duck';
 declare interface IFirebaseConfig {
   apiKey: string;
   authDomain: string;
@@ -48,15 +49,16 @@ function getfirebaseDb() {
 }
 
 const SETTINGS_COLLECTION = 'settings';
+const PAYMENTS_COLLETION = 'payments';
 
-export function getUserSettings(userId: string = '0') {
+export function getUserSettingsService(userId: string = '0') {
   const db = getfirebaseDb();
   const settings = db.collection(SETTINGS_COLLECTION).doc(userId);
 
   return settings
     .get()
     .then(setting => {
-      console.log(setting.data());
+      console.log('get successfully ', setting.data());
 
       return setting.data();
     })
@@ -65,9 +67,46 @@ export function getUserSettings(userId: string = '0') {
     });
 }
 
-export function saveUserSettings(userId: string, settings: ISettings) {
+export function saveUserSettingsService(userId: string, settings: ISettings) {
   const db = getfirebaseDb();
   const settingsCol = db.collection(SETTINGS_COLLECTION).doc(userId);
 
-  return settingsCol.set(settings);
+  return settingsCol
+    .set(settings)
+    .then(() => {
+      console.log('saved settings');
+    })
+    .catch(() => {
+      console.log('was an error');
+    });
+}
+
+export function savePaymentsService(userId: string, payments: IPayments) {
+  const db = getfirebaseDb();
+  const paymentsCol = db.collection(PAYMENTS_COLLETION).doc(userId);
+
+  return paymentsCol
+    .set(payments)
+    .then(() => {
+      console.log('saved payment');
+    })
+    .catch(() => {
+      console.log('was an error');
+    });
+}
+
+export function getUserPaymentService(userId: string = '0') {
+  const db = getfirebaseDb();
+  const dbCol = db.collection(PAYMENTS_COLLETION).doc(userId);
+
+  return dbCol
+    .get()
+    .then(payments => {
+      console.log('get successfully ', payments.data());
+
+      return payments.data();
+    })
+    .catch(e => {
+      console.log(e);
+    });
 }

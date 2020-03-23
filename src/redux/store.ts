@@ -4,6 +4,8 @@ import userReducer from './user-duck';
 import settingsReducer from './settings-duck';
 import { IUser } from '../definition/IUser';
 import { ISettings } from '../definition/ISettings';
+import { IPayments } from './payments-duck';
+import paymentsReducer from './payments-duck';
 
 declare global {
   interface Window {
@@ -13,10 +15,12 @@ declare global {
 export interface IStore {
   user: IUser;
   settings: ISettings;
+  payments: IPayments;
 }
 const rootReducer = combineReducers({
   user: userReducer,
-  settings: settingsReducer
+  settings: settingsReducer,
+  payments: paymentsReducer
 });
 export type RootState = ReturnType<typeof rootReducer>;
 

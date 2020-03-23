@@ -1,5 +1,8 @@
 import { ISettings } from '../definition/ISettings';
-import { getUserSettings, saveUserSettings } from '../services/firebase';
+import {
+  getUserSettingsService,
+  saveUserSettingsService
+} from '../services/firebase';
 import { Dispatch } from 'redux';
 
 /**
@@ -88,7 +91,7 @@ export const getSettingsAction = (userId: string) => async (
   dispatch: Dispatch
 ) => {
   try {
-    const settings = await getUserSettings(userId);
+    const settings = await getUserSettingsService(userId);
     if (!settings) return;
     console.log('get settins actions');
 
@@ -105,7 +108,7 @@ export const saveSettingsAction = (
 ) => async (dispatch: Dispatch) => {
   try {
     dispatch({ type: SAVE_SETTINGS, payload: settings });
-    saveUserSettings(userId, settings)
+    saveUserSettingsService(userId, settings)
       .then(function() {
         dispatch({ type: SETTINGS_FETCHING, fetching: true });
       })
