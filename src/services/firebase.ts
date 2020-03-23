@@ -102,9 +102,10 @@ export function getUserPaymentService(userId: string = '0') {
   return dbCol
     .get()
     .then(payments => {
+      const emp: IPayments = { payments: [] };
       console.log('get successfully ', payments.data());
 
-      return payments.data();
+      return payments.data() || emp;
     })
     .catch(e => {
       console.log(e);
