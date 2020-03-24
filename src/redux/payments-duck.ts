@@ -90,7 +90,6 @@ export const savePaymentAction = (userId: string, payments: IPayments) => (
   return savePaymentsService(userId, payments)
     .then(function() {
       dispatch({ type: SAVE_PAYMENT, payload: payments });
-      console.log('saved');
     })
     .catch(function(error) {
       console.error('Error writing document: ', error);

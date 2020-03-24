@@ -64,7 +64,7 @@ export function getUserSettingsService(userId: string = '0') {
         dataResult && Object.keys(dataResult).length > 0
           ? dataResult
           : initialState;
-      console.log('get successfully ', result);
+      //console.log('get successfully ', result);
       return result;
     })
     .catch(e => {
@@ -86,16 +86,10 @@ export function saveUserSettingsService(userId: string, settings: ISettings) {
     });
 }
 
-export function savePaymentsService(
-  userId: string,
-  payments: IPayments,
-  isDefault = false
-) {
+export function savePaymentsService(userId: string, payments: IPayments) {
   const db = getfirebaseDb();
-  const collectionName = !isDefault ? PAYMENTS_COLLETION : SETTINGS_COLLECTION;
-  const paymentsCol = db.collection(collectionName).doc(userId);
 
-  console.log(collectionName);
+  const paymentsCol = db.collection(PAYMENTS_COLLETION).doc(userId);
 
   return paymentsCol
     .set(payments)
@@ -120,7 +114,7 @@ export function getUserPaymentService(userId: string = '0') {
         Object.keys(responsePayments).length > 0
           ? (responsePayments.data() as IPayments)
           : { payments: [] };
-      console.log('get successfully  response -- ', response);
+      //console.log('get successfully  response -- ', response);
       return response;
     })
     .catch(e => {

@@ -74,8 +74,6 @@ function PaymentsContainer({
     }
   }
 
-  console.log(paymentsFiltered);
-
   return (
     <div>
       <h2>{title}</h2>

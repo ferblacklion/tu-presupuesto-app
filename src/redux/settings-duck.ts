@@ -96,7 +96,7 @@ export const getSettingsAction = (userId: string) => async (
       responseData !== undefined && Object.keys(responseData).length > 0
         ? (responseData as ISettings)
         : { totalAmount: 0, cutOffDate: 0 };
-    console.log('get settins actions');
+    console.log('get settins actions ---', settings);
 
     dispatch({ type: GET_SETTINGS, payload: settings });
     dispatch({ type: SETTINGS_FETCHING, fetching: true });

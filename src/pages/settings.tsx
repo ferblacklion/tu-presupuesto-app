@@ -15,6 +15,7 @@ import {
   IPayments,
   savePaymentAction
 } from '../redux/payments-duck';
+import NumberFormat from 'react-number-format';
 
 export declare interface ISettingsProps {
   loginFromStoreAction: () => Promise<void>;
@@ -38,7 +39,7 @@ const SettingsPage = ({
   savePaymentAction
 }: ISettingsProps) => {
   const cutOffDateElement = useRef<HTMLInputElement>(null);
-  const totalAmountElement = useRef<HTMLInputElement>(null);
+  let totalAmountElement: any = null;
   const [cutOffDate, setCutOffDate] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
 
@@ -67,17 +68,19 @@ const SettingsPage = ({
     if (payments.payments.length > -1 && user) {
       savePaymentAction(user?.uid || '0', payments);
     }
+    console.log(payments.payments);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payments.payments]);
+  }, [payments.payments.length]);
 
   const saveUserData = () => {
     const currentUserSettings: ISettings = {
       cutOffDate: cutOffDateElement.current?.value
         ? Number(cutOffDateElement.current?.value)
-        : 31,
-      totalAmount: totalAmountElement.current?.value
-        ? Number(totalAmountElement.current.value)
-        : 5000
+        : 0,
+      totalAmount: totalAmountElement.state.numAsString
+        ? Number(totalAmountElement.state.numAsString)
+        : 0
     };
 
     if (user) saveSettingsAction(user?.uid || '0', currentUserSettings);
@@ -92,18 +95,24 @@ const SettingsPage = ({
             <label htmlFor="">Fecha corte:</label>
             <input
               ref={cutOffDateElement}
-              type="text"
+              type="number"
               name="cut-off-date"
+              minLength={2}
               defaultValue={cutOffDate}
             />
           </p>
           <p>
             <label htmlFor="">Monto total:</label>
-            <input
-              ref={totalAmountElement}
-              type="text"
-              name="total-amount"
-              defaultValue={totalAmount}
+
+            <NumberFormat
+              ref={(el: any) => (totalAmountElement = el)}
+              decimalScale={2}
+              thousandSeparator={true}
+              id="total-amount"
+              prefix={'Q'}
+              value={totalAmount}
+              inputMode={'decimal'}
+              allowNegative={false}
             />
           </p>
           <button onClick={saveUserData}>Guardar</button>
