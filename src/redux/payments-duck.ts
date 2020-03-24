@@ -68,7 +68,9 @@ export default function reducer(
       return { ...action.payload };
     case DELETE_PAYMENT:
       const paymentsFiltered = state.payments.filter(
-        (payment: IPayment) => payment.cost !== action.payload.payment.cost && payment.name !== action.payload.payment.name
+        (payment: IPayment) =>
+          payment.cost !== action.payload.payment.cost &&
+          payment.name !== action.payload.payment.name
       );
       console.log('delete', paymentsFiltered);
 
@@ -105,7 +107,7 @@ export const getPaymentsAction = (userId: string) => (dispatch: Dispatch) => {
   return getUserPaymentService(userId)
     .then(dataResponse => {
       const payments: IPayments =
-        dataResponse !== undefined
+        dataResponse !== undefined && Object.keys(dataResponse).length > 0
           ? (dataResponse as IPayments)
           : { payments: [] };
       console.log('get payments actions --- ', payments);
@@ -116,6 +118,8 @@ export const getPaymentsAction = (userId: string) => (dispatch: Dispatch) => {
     });
 };
 
-export const deletePaymentsAction = (payment: IPayment) => (dispatch: Dispatch) => {
+export const deletePaymentsAction = (payment: IPayment) => (
+  dispatch: Dispatch
+) => {
   dispatch({ type: DELETE_PAYMENT, payload: { payment } });
 };

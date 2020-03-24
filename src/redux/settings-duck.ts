@@ -93,7 +93,7 @@ export const getSettingsAction = (userId: string) => async (
   try {
     const responseData = await getUserSettingsService(userId);
     const settings: ISettings =
-      responseData !== undefined
+      responseData !== undefined && Object.keys(responseData).length > 0
         ? (responseData as ISettings)
         : { totalAmount: 0, cutOffDate: 0 };
     console.log('get settins actions');
