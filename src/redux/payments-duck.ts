@@ -4,7 +4,7 @@ import {
   getUserPaymentService
 } from '../services/firebase';
 
-const initialState: IPayments = {
+export const initialState: IPayments = {
   payments: []
 };
 /**
@@ -17,6 +17,8 @@ export const DELETE_PAYMENT = 'DELETE_PAYMENT';
 export declare interface IPayment {
   name: string;
   cost: number;
+  isDefault: boolean;
+  datetime: string;
 }
 export declare interface IPayments {
   payments: IPayment[];
@@ -39,7 +41,7 @@ export interface IAddPaymentAction {
 
 export interface IDeletePaymentAction {
   type: typeof DELETE_PAYMENT;
-  payload: { index: number };
+  payload: { payment: IPayment };
 }
 
 type paymentsActionsTypes =
@@ -66,8 +68,10 @@ export default function reducer(
       return { ...action.payload };
     case DELETE_PAYMENT:
       const paymentsFiltered = state.payments.filter(
-        (payment: IPayment, i: number) => i !== action.payload.index
+        (payment: IPayment) => payment.cost !== action.payload.payment.cost && payment.name !== action.payload.payment.name
       );
+      console.log('delete', paymentsFiltered);
+
       return { ...state, payments: paymentsFiltered };
     default:
       return { ...state };
@@ -99,15 +103,19 @@ export const addPaymentAction = (p: IPayment) => (dispatch: Dispatch) => {
 
 export const getPaymentsAction = (userId: string) => (dispatch: Dispatch) => {
   return getUserPaymentService(userId)
-    .then(payments => {
-      console.log('get payments actions');
+    .then(dataResponse => {
+      const payments: IPayments =
+        dataResponse !== undefined
+          ? (dataResponse as IPayments)
+          : { payments: [] };
+      console.log('get payments actions --- ', payments);
       dispatch({ type: GET_PAYMENT, payload: payments });
     })
     .catch(e => {
-      console.log(e);
+      console.log(e.message);
     });
 };
 
-export const deletePaymentsAction = (index: number) => (dispatch: Dispatch) => {
-  dispatch({ type: DELETE_PAYMENT, payload: { index } });
+export const deletePaymentsAction = (payment: IPayment) => (dispatch: Dispatch) => {
+  dispatch({ type: DELETE_PAYMENT, payload: { payment } });
 };

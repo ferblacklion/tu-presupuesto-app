@@ -9,13 +9,22 @@ import { RootState } from '../redux/store';
 import { IUser } from '../definition/IUser';
 import { loginFromStoreAction } from '../redux/user-duck';
 import { ISettings } from '../definition/ISettings';
+import PaymentsContainer from '../components/payments-container';
+import {
+  getPaymentsAction,
+  IPayments,
+  savePaymentAction
+} from '../redux/payments-duck';
 
 export declare interface ISettingsProps {
   loginFromStoreAction: () => Promise<void>;
   user: IUser | null;
   saveSettingsAction: (uID: string, s: ISettings) => Promise<void>;
   getSettingsAction: (uID: string) => Promise<void>;
+  getPaymentsAction: (uID: string) => Promise<void>;
+  savePaymentAction: (uID: string, payments: IPayments) => Promise<void>;
   settings: ISettingsState;
+  payments: IPayments;
 }
 
 const SettingsPage = ({
@@ -23,7 +32,10 @@ const SettingsPage = ({
   loginFromStoreAction,
   saveSettingsAction,
   getSettingsAction,
-  settings
+  settings,
+  getPaymentsAction,
+  payments,
+  savePaymentAction
 }: ISettingsProps) => {
   const cutOffDateElement = useRef<HTMLInputElement>(null);
   const totalAmountElement = useRef<HTMLInputElement>(null);
@@ -39,14 +51,24 @@ const SettingsPage = ({
 
   useEffect(() => {
     if (user) {
-      getSettingsAction(user.uid || '0');
+      getSettingsAction(user.uid || '');
+      getPaymentsAction(user.uid || '');
     }
-  }, [getSettingsAction, user]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   useEffect(() => {
     setCutOffDate(settings.cutOffDate);
     setTotalAmount(settings.totalAmount);
   }, [settings]);
+
+  useEffect(() => {
+    if (payments.payments.length > -1 && user) {
+      savePaymentAction(user?.uid || '0', payments);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [payments.payments]);
 
   const saveUserData = () => {
     const currentUserSettings: ISettings = {
@@ -58,7 +80,7 @@ const SettingsPage = ({
         : 5000
     };
 
-    saveSettingsAction(user?.uid || '0', currentUserSettings);
+    if (user) saveSettingsAction(user?.uid || '0', currentUserSettings);
   };
 
   return (
@@ -87,6 +109,12 @@ const SettingsPage = ({
           <button onClick={saveUserData}>Guardar</button>
         </>
       )}
+      <PaymentsContainer
+        title={'Agregar gastos predeterminados:'}
+        user={user}
+        payments={payments}
+        isDefaultData={true}
+      />
     </div>
   );
 };
@@ -94,13 +122,16 @@ const SettingsPage = ({
 function mapStateToProps(state: RootState) {
   return {
     user: state.user.userData,
-    settings: state.settings
+    settings: state.settings,
+    payments: state.payments
   };
 }
 const dispatchToProps = {
   loginFromStoreAction,
   saveSettingsAction,
-  getSettingsAction
+  getSettingsAction,
+  getPaymentsAction,
+  savePaymentAction
 };
 
 export default connect(mapStateToProps, dispatchToProps)(SettingsPage);

@@ -59,13 +59,16 @@ export function getUserSettingsService(userId: string = '0') {
     .get()
     .then(setting => {
       const initialState: ISettings = { totalAmount: 0, cutOffDate: 0 };
-      const result = setting.data() || initialState;
+      const dataResult = setting.data();
+      const result =
+        dataResult && Object.keys(dataResult).length > 0
+          ? dataResult
+          : initialState;
       console.log('get successfully ', result);
-
       return result;
     })
     .catch(e => {
-      console.log(e);
+      console.log('service', Error(e.message));
     });
 }
 
@@ -83,9 +86,16 @@ export function saveUserSettingsService(userId: string, settings: ISettings) {
     });
 }
 
-export function savePaymentsService(userId: string, payments: IPayments) {
+export function savePaymentsService(
+  userId: string,
+  payments: IPayments,
+  isDefault = false
+) {
   const db = getfirebaseDb();
-  const paymentsCol = db.collection(PAYMENTS_COLLETION).doc(userId);
+  const collectionName = !isDefault ? PAYMENTS_COLLETION : SETTINGS_COLLECTION;
+  const paymentsCol = db.collection(collectionName).doc(userId);
+
+  console.log(collectionName);
 
   return paymentsCol
     .set(payments)
@@ -99,17 +109,21 @@ export function savePaymentsService(userId: string, payments: IPayments) {
 
 export function getUserPaymentService(userId: string = '0') {
   const db = getfirebaseDb();
+
   const dbCol = db.collection(PAYMENTS_COLLETION).doc(userId);
 
   return dbCol
     .get()
-    .then(payments => {
-      const emp: IPayments = { payments: [] };
-      console.log('get successfully ', payments.data());
-
-      return payments.data() || emp;
+    .then(responsePayments => {
+      const response =
+        responsePayments.data() !== undefined &&
+        Object.keys(responsePayments).length > 0
+          ? (responsePayments.data() as IPayments)
+          : { payments: [] };
+      console.log('get successfully  response -- ', response);
+      return response;
     })
     .catch(e => {
-      console.log(e);
+      console.log('service ', Error(e.message));
     });
 }

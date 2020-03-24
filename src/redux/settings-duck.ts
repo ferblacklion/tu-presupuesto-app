@@ -91,8 +91,11 @@ export const getSettingsAction = (userId: string) => async (
   dispatch: Dispatch
 ) => {
   try {
-    const settings = await getUserSettingsService(userId);
-    if (!settings) return;
+    const responseData = await getUserSettingsService(userId);
+    const settings: ISettings =
+      responseData !== undefined
+        ? (responseData as ISettings)
+        : { totalAmount: 0, cutOffDate: 0 };
     console.log('get settins actions');
 
     dispatch({ type: GET_SETTINGS, payload: settings });

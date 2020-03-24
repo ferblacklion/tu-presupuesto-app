@@ -16,7 +16,6 @@ function PaymentsStatus({ settings, payments }: IPaymentsStatus) {
   };
 
   const total = payments.payments.reduce(reducer, initialCost);
-  console.log('total ', total);
 
   return (
     <div>
