@@ -3,6 +3,7 @@ import {
   savePaymentsService,
   getUserPaymentService
 } from '../services/firebase';
+import { firestore } from 'firebase';
 
 export const initialState: IPayments = {
   payments: []
@@ -12,13 +13,13 @@ export const initialState: IPayments = {
  */
 export const SAVE_PAYMENT = 'SAVE_PAYMENT';
 export const GET_PAYMENT = 'GET_PAYMENT';
-export const ADD_PAYMENT = 'ADD_PAYMENT';
 export const DELETE_PAYMENT = 'DELETE_PAYMENT';
 export declare interface IPayment {
+  id?: string;
   name: string;
   cost: number;
   isDefault: boolean;
-  datetime: string;
+  datetime: firestore.Timestamp;
 }
 export declare interface IPayments {
   payments: IPayment[];
@@ -26,17 +27,12 @@ export declare interface IPayments {
 
 export interface ISavePaymentAction {
   type: typeof SAVE_PAYMENT;
-  payload: IPayments;
+  payload: IPayment;
 }
 
 export interface IGetPaymentAction {
   type: typeof GET_PAYMENT;
   payload: IPayments;
-}
-
-export interface IAddPaymentAction {
-  type: typeof ADD_PAYMENT;
-  payload: IPayment;
 }
 
 export interface IDeletePaymentAction {
@@ -46,7 +42,6 @@ export interface IDeletePaymentAction {
 
 type paymentsActionsTypes =
   | ISavePaymentAction
-  | IAddPaymentAction
   | IGetPaymentAction
   | IDeletePaymentAction;
 
@@ -61,20 +56,16 @@ export default function reducer(
 ) {
   switch (action.type) {
     case SAVE_PAYMENT:
-      return { ...action.payload };
-    case ADD_PAYMENT:
       return { ...state, payments: [...state.payments, action.payload] };
     case GET_PAYMENT:
       return { ...action.payload };
     case DELETE_PAYMENT:
       const paymentsFiltered = state.payments.filter(
-        (payment: IPayment) =>
-          payment.cost !== action.payload.payment.cost &&
-          payment.name !== action.payload.payment.name
+        (payment: IPayment) => payment.id !== action.payload.payment.id
       );
-      console.log('delete', paymentsFiltered);
+      console.log('delete', action.payload.payment.id);
 
-      return { ...state, payments: paymentsFiltered };
+      return { payments: [...paymentsFiltered] };
     default:
       return { ...state };
   }
@@ -84,22 +75,16 @@ export default function reducer(
  * ACTIONS
  */
 
-export const savePaymentAction = (userId: string, payments: IPayments) => (
+export const savePaymentAction = (userId: string, payment: IPayment) => (
   dispatch: Dispatch
 ) => {
-  return savePaymentsService(userId, payments)
+  return savePaymentsService(userId, payment)
     .then(function() {
-      dispatch({ type: SAVE_PAYMENT, payload: payments });
+      dispatch({ type: SAVE_PAYMENT, payload: payment });
     })
     .catch(function(error) {
       console.error('Error writing document: ', error);
     });
-};
-
-export const addPaymentAction = (p: IPayment) => (dispatch: Dispatch) => {
-  return Promise.resolve().then(() => {
-    dispatch({ type: ADD_PAYMENT, payload: p });
-  });
 };
 
 export const getPaymentsAction = (userId: string) => (dispatch: Dispatch) => {
@@ -107,7 +92,7 @@ export const getPaymentsAction = (userId: string) => (dispatch: Dispatch) => {
     .then(dataResponse => {
       const payments: IPayments =
         dataResponse !== undefined && Object.keys(dataResponse).length > 0
-          ? (dataResponse as IPayments)
+          ? dataResponse
           : { payments: [] };
       console.log('get payments actions --- ', payments);
       dispatch({ type: GET_PAYMENT, payload: payments });

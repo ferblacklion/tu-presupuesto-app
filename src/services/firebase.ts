@@ -2,7 +2,8 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import { ISettings } from '../definition/ISettings';
-import { IPayments } from '../redux/payments-duck';
+import { IPayments, IPayment } from '../redux/payments-duck';
+import moment from 'moment';
 declare interface IFirebaseConfig {
   apiKey: string;
   authDomain: string;
@@ -14,6 +15,8 @@ declare interface IFirebaseConfig {
 }
 
 let firebaseClient: firebase.app.App;
+
+const montlyCollection = `${moment().month() + 1}-${moment().year()}`;
 
 function getFirebaseClient() {
   const firebaseConfig: IFirebaseConfig = {
@@ -86,13 +89,13 @@ export function saveUserSettingsService(userId: string, settings: ISettings) {
     });
 }
 
-export function savePaymentsService(userId: string, payments: IPayments) {
+export function savePaymentsService(userId: string, payment: IPayment) {
   const db = getfirebaseDb();
-
-  const paymentsCol = db.collection(PAYMENTS_COLLETION).doc(userId);
-
+  const paymentsCol = db
+    .collection(PAYMENTS_COLLETION + '/' + userId + '/' + montlyCollection)
+    .doc();
   return paymentsCol
-    .set(payments)
+    .set(payment)
     .then(() => {
       console.log('saved payment');
     })
@@ -101,21 +104,35 @@ export function savePaymentsService(userId: string, payments: IPayments) {
     });
 }
 
+const initialPayment: IPayment = {
+  id: '',
+  name: '',
+  cost: 0,
+  isDefault: false,
+  datetime: firebase.firestore.Timestamp.fromDate(new Date())
+};
 export function getUserPaymentService(userId: string = '0') {
   const db = getfirebaseDb();
 
-  const dbCol = db.collection(PAYMENTS_COLLETION).doc(userId);
+  const query = db
+    .collection(PAYMENTS_COLLETION + '/' + userId + '/' + montlyCollection)
 
-  return dbCol
+    .where('isDefault', '==', false)
+    .orderBy('datetime');
+
+  return query
     .get()
-    .then(responsePayments => {
-      const response =
-        responsePayments.data() !== undefined &&
-        Object.keys(responsePayments).length > 0
-          ? (responsePayments.data() as IPayments)
-          : { payments: [] };
-      //console.log('get successfully  response -- ', response);
-      return response;
+
+    .then(querySnapshot => {
+      const dataResult: IPayments = {
+        payments: []
+      };
+      querySnapshot.forEach(doc => {
+        // doc.data() is never undefined for query doc snapshots
+        const data = doc.data();
+        dataResult.payments.push({ ...initialPayment, ...data, id: doc.id });
+      });
+      return dataResult;
     })
     .catch(e => {
       console.log('service ', Error(e.message));

@@ -3,11 +3,7 @@ import { connect } from 'react-redux';
 import { IUser } from '../definition/IUser';
 import { RootState } from '../redux/store';
 import { loginUserAction, loginFromStoreAction } from '../redux/user-duck';
-import {
-  IPayments,
-  savePaymentAction,
-  getPaymentsAction
-} from '../redux/payments-duck';
+import { IPayments, getPaymentsAction } from '../redux/payments-duck';
 
 import PaymentsStatus from '../components/payments-status';
 import { ISettings } from '../definition/ISettings';
@@ -22,7 +18,6 @@ export interface IHomeProps {
   settings: ISettings;
   getSettingsAction: (userId: string) => Promise<void>;
   getPaymentsAction: (userId: string) => Promise<void>;
-  savePaymentAction: (userId: string, payments: IPayments) => Promise<void>;
 }
 
 function HomePage({
@@ -32,8 +27,7 @@ function HomePage({
   payments,
   settings,
   getSettingsAction,
-  getPaymentsAction,
-  savePaymentAction
+  getPaymentsAction
 }: IHomeProps) {
   const initFetch = useCallback(() => {
     loginFromStoreAction();
@@ -46,13 +40,6 @@ function HomePage({
   const login = () => {
     loginUserAction();
   };
-
-  useEffect(() => {
-    if (payments.payments.length > -1 && user) {
-      savePaymentAction(user?.uid || '0', payments);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payments.payments]);
 
   useEffect(() => {
     if (user && user.uid) {
@@ -104,8 +91,7 @@ const dispatchToProps = {
   loginUserAction,
   loginFromStoreAction,
   getSettingsAction,
-  getPaymentsAction,
-  savePaymentAction
+  getPaymentsAction
 };
 
 export default connect(mapStateToProps, dispatchToProps)(HomePage);

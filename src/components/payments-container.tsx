@@ -3,22 +3,24 @@ import NumberFormat from 'react-number-format';
 import { IPayment, IPayments } from '../redux/payments-duck';
 import { IUser } from '../definition/IUser';
 import {
-  addPaymentAction,
   getPaymentsAction,
-  deletePaymentsAction
+  deletePaymentsAction,
+  savePaymentAction
 } from '../redux/payments-duck';
 import { isNumber } from 'util';
 import { connect } from 'react-redux';
 import formatCurrency from '../utils/format-currency';
-import moment from 'moment';
+
+import 'firebase/firestore';
+import firebase from 'firebase/app';
 
 export declare interface IPaymentsContainer {
   title: string;
   user: IUser | null;
   payments: IPayments;
-  addPaymentAction: (p: IPayment) => Promise<void>;
   deletePaymentsAction: (payment: IPayment) => any;
   isDefaultData?: boolean;
+  savePaymentAction: (userId: string, payment: IPayment) => any;
 }
 
 function PaymentsContainer({
@@ -26,8 +28,8 @@ function PaymentsContainer({
   user,
   payments,
   deletePaymentsAction,
-  addPaymentAction,
-  isDefaultData = false
+  isDefaultData = false,
+  savePaymentAction
 }: IPaymentsContainer) {
   let costValueInput = '';
   const costNameInput = useRef<HTMLInputElement>(null);
@@ -41,11 +43,11 @@ function PaymentsContainer({
         ? Number(costInput.state.numAsString)
         : 0,
       isDefault: isDefaultData,
-      datetime: moment().format('LLL')
+      datetime: firebase.firestore.Timestamp.fromDate(new Date())
     };
 
     if (singlePayment.name.trim() && singlePayment.cost > 0) {
-      addPaymentAction(singlePayment).then(() => {
+      savePaymentAction(user.uid || '', singlePayment).then(() => {
         if (costNameInput.current) costNameInput.current.value = '';
         costValueInput = '';
       });
@@ -55,8 +57,15 @@ function PaymentsContainer({
   const deleteCostItem = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const name = e.currentTarget.getAttribute('data-name') || '';
+    const id = e.currentTarget.getAttribute('data-id') || '';
     const cost = Number(e.currentTarget.getAttribute('data-cost')) || -1;
-    const payment: IPayment = { name, cost, isDefault: false, datetime: '' };
+    const payment: IPayment = {
+      id,
+      name,
+      cost,
+      isDefault: false,
+      datetime: firebase.firestore.Timestamp.fromDate(new Date())
+    };
     if (payment.name && isNumber(payment.cost)) {
       deletePaymentsAction(payment);
     }
@@ -65,13 +74,7 @@ function PaymentsContainer({
   let paymentsFiltered: IPayments = { payments: [] };
 
   if (payments !== undefined && payments.payments !== undefined) {
-    if (isDefaultData) {
-      paymentsFiltered.payments = payments.payments.filter(
-        (p: IPayment) => p.isDefault === true
-      );
-    } else {
-      paymentsFiltered.payments = payments.payments;
-    }
+    paymentsFiltered.payments = payments.payments;
   }
 
   return (
@@ -108,12 +111,13 @@ function PaymentsContainer({
       <div>
         LISTA DE GASTOS
         <ul>
-          {paymentsFiltered.payments.map((p, i) => (
-            <li key={i}>
+          {paymentsFiltered.payments.map((p, i: number) => (
+            <li key={p.id || i}>
               {p.name} ===> {formatCurrency(p.cost)}{' '}
               <a
                 href="/"
                 data-name={p.name}
+                data-id={p.id}
                 data-cost={p.cost}
                 onClick={deleteCostItem}
               >
@@ -128,9 +132,9 @@ function PaymentsContainer({
 }
 
 const dispatchToProps = {
-  addPaymentAction,
   getPaymentsAction,
-  deletePaymentsAction
+  deletePaymentsAction,
+  savePaymentAction
 };
 
 export default connect(null, dispatchToProps)(PaymentsContainer);

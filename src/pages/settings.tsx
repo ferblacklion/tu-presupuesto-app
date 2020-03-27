@@ -10,11 +10,7 @@ import { IUser } from '../definition/IUser';
 import { loginFromStoreAction } from '../redux/user-duck';
 import { ISettings } from '../definition/ISettings';
 import PaymentsContainer from '../components/payments-container';
-import {
-  getPaymentsAction,
-  IPayments,
-  savePaymentAction
-} from '../redux/payments-duck';
+import { getPaymentsAction, IPayments } from '../redux/payments-duck';
 import NumberFormat from 'react-number-format';
 
 export declare interface ISettingsProps {
@@ -23,7 +19,6 @@ export declare interface ISettingsProps {
   saveSettingsAction: (uID: string, s: ISettings) => Promise<void>;
   getSettingsAction: (uID: string) => Promise<void>;
   getPaymentsAction: (uID: string) => Promise<void>;
-  savePaymentAction: (uID: string, payments: IPayments) => Promise<void>;
   settings: ISettingsState;
   payments: IPayments;
 }
@@ -35,8 +30,7 @@ const SettingsPage = ({
   getSettingsAction,
   settings,
   getPaymentsAction,
-  payments,
-  savePaymentAction
+  payments
 }: ISettingsProps) => {
   const cutOffDateElement = useRef<HTMLInputElement>(null);
   let totalAmountElement: any = null;
@@ -63,15 +57,6 @@ const SettingsPage = ({
     setCutOffDate(settings.cutOffDate);
     setTotalAmount(settings.totalAmount);
   }, [settings]);
-
-  useEffect(() => {
-    if (payments.payments.length > -1 && user) {
-      savePaymentAction(user?.uid || '0', payments);
-    }
-    console.log(payments.payments);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payments.payments.length]);
 
   const saveUserData = () => {
     const currentUserSettings: ISettings = {
@@ -139,8 +124,7 @@ const dispatchToProps = {
   loginFromStoreAction,
   saveSettingsAction,
   getSettingsAction,
-  getPaymentsAction,
-  savePaymentAction
+  getPaymentsAction
 };
 
 export default connect(mapStateToProps, dispatchToProps)(SettingsPage);

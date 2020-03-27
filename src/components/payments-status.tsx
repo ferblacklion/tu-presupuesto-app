@@ -15,7 +15,10 @@ function PaymentsStatus({ settings, payments }: IPaymentsStatus) {
     return accumulator + item.cost;
   };
 
-  const total = payments.payments.reduce(reducer, initialCost);
+  const total =
+    payments.payments !== undefined
+      ? payments.payments.reduce(reducer, initialCost)
+      : 0;
 
   return (
     <div>
