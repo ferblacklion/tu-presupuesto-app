@@ -18,7 +18,7 @@ export declare interface ISettingsProps {
   user: IUser | null;
   saveSettingsAction: (uID: string, s: ISettings) => Promise<void>;
   getSettingsAction: (uID: string) => Promise<void>;
-  getPaymentsAction: (uID: string) => Promise<void>;
+  getPaymentsAction: (uID: string, isDefault: boolean) => Promise<void>;
   settings: ISettingsState;
   payments: IPayments;
 }
@@ -47,7 +47,7 @@ const SettingsPage = ({
   useEffect(() => {
     if (user) {
       getSettingsAction(user.uid || '');
-      getPaymentsAction(user.uid || '');
+      getPaymentsAction(user.uid || '', true);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -74,6 +74,9 @@ const SettingsPage = ({
   return (
     <div>
       <h1>Settings</h1>
+      <p>
+        <a href="/">Inicio</a>
+      </p>
       {settings.success && (
         <>
           <p>

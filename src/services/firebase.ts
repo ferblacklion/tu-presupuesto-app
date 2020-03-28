@@ -111,14 +111,24 @@ const initialPayment: IPayment = {
   isDefault: false,
   datetime: firebase.firestore.Timestamp.fromDate(new Date())
 };
-export function getUserPaymentService(userId: string = '0') {
+export function getUserPaymentService(
+  userId: string = '0',
+  getDefault: boolean
+) {
   const db = getfirebaseDb();
+  console.log(getDefault);
 
-  const query = db
+  let query: firebase.firestore.Query<firebase.firestore.DocumentData> = db
     .collection(PAYMENTS_COLLETION + '/' + userId + '/' + montlyCollection)
 
-    .where('isDefault', '==', false)
-    .orderBy('datetime');
+    .where('cost', '>=', 0);
+
+  if (getDefault) {
+    query = db
+      .collection(PAYMENTS_COLLETION + '/' + userId + '/' + montlyCollection)
+      .orderBy('datetime')
+      .where('isDefault', '==', true);
+  }
 
   return query
     .get()
@@ -136,5 +146,20 @@ export function getUserPaymentService(userId: string = '0') {
     })
     .catch(e => {
       console.log('service ', Error(e.message));
+    });
+}
+
+export function deletePaymentService(id: string, userId: string) {
+  const db = getfirebaseDb();
+
+  return db
+    .collection(PAYMENTS_COLLETION + '/' + userId + '/' + montlyCollection)
+    .doc(id)
+    .delete()
+    .then(function() {
+      console.log('Document successfully deleted!');
+    })
+    .catch(function(error) {
+      console.error('Error removing document: ', error);
     });
 }

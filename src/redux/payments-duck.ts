@@ -1,7 +1,8 @@
 import { Dispatch } from 'redux';
 import {
   savePaymentsService,
-  getUserPaymentService
+  getUserPaymentService,
+  deletePaymentService
 } from '../services/firebase';
 import { firestore } from 'firebase';
 
@@ -15,7 +16,7 @@ export const SAVE_PAYMENT = 'SAVE_PAYMENT';
 export const GET_PAYMENT = 'GET_PAYMENT';
 export const DELETE_PAYMENT = 'DELETE_PAYMENT';
 export declare interface IPayment {
-  id?: string;
+  id: string;
   name: string;
   cost: number;
   isDefault: boolean;
@@ -37,7 +38,7 @@ export interface IGetPaymentAction {
 
 export interface IDeletePaymentAction {
   type: typeof DELETE_PAYMENT;
-  payload: { payment: IPayment };
+  payload: { id: string };
 }
 
 type paymentsActionsTypes =
@@ -61,10 +62,9 @@ export default function reducer(
       return { ...action.payload };
     case DELETE_PAYMENT:
       const paymentsFiltered = state.payments.filter(
-        (payment: IPayment) => payment.id !== action.payload.payment.id
+        (payment: IPayment) => payment.id !== action.payload.id
       );
-      console.log('delete', action.payload.payment.id);
-
+      //console.log('delete', action.payload.id);
       return { payments: [...paymentsFiltered] };
     default:
       return { ...state };
@@ -87,8 +87,12 @@ export const savePaymentAction = (userId: string, payment: IPayment) => (
     });
 };
 
-export const getPaymentsAction = (userId: string) => (dispatch: Dispatch) => {
-  return getUserPaymentService(userId)
+export const getPaymentsAction = (userId: string, getDefault = false) => (
+  dispatch: Dispatch
+) => {
+  console.log('get default ', getDefault);
+
+  return getUserPaymentService(userId, getDefault)
     .then(dataResponse => {
       const payments: IPayments =
         dataResponse !== undefined && Object.keys(dataResponse).length > 0
@@ -102,8 +106,10 @@ export const getPaymentsAction = (userId: string) => (dispatch: Dispatch) => {
     });
 };
 
-export const deletePaymentsAction = (payment: IPayment) => (
+export const deletePaymentsAction = (paymentId: string, userId = '') => (
   dispatch: Dispatch
 ) => {
-  dispatch({ type: DELETE_PAYMENT, payload: { payment } });
+  return deletePaymentService(paymentId, userId).then(() => {
+    dispatch({ type: DELETE_PAYMENT, payload: { id: paymentId } });
+  });
 };

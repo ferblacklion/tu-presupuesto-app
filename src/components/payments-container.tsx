@@ -7,7 +7,6 @@ import {
   deletePaymentsAction,
   savePaymentAction
 } from '../redux/payments-duck';
-import { isNumber } from 'util';
 import { connect } from 'react-redux';
 import formatCurrency from '../utils/format-currency';
 
@@ -18,9 +17,10 @@ export declare interface IPaymentsContainer {
   title: string;
   user: IUser | null;
   payments: IPayments;
-  deletePaymentsAction: (payment: IPayment) => any;
+  deletePaymentsAction: (paymentId: string, userId: string) => Promise<void>;
   isDefaultData?: boolean;
-  savePaymentAction: (userId: string, payment: IPayment) => any;
+  savePaymentAction: (userId: string, payment: IPayment) => Promise<void>;
+  getPaymentsAction: (userId: string, isDefault: boolean) => Promise<void>;
 }
 
 function PaymentsContainer({
@@ -29,7 +29,8 @@ function PaymentsContainer({
   payments,
   deletePaymentsAction,
   isDefaultData = false,
-  savePaymentAction
+  savePaymentAction,
+  getPaymentsAction
 }: IPaymentsContainer) {
   let costValueInput = '';
   const costNameInput = useRef<HTMLInputElement>(null);
@@ -38,6 +39,7 @@ function PaymentsContainer({
   const savePayments = () => {
     if (!user) return;
     const singlePayment: IPayment = {
+      id: '',
       name: costNameInput?.current?.value || '',
       cost: !isNaN(Number(costInput.state.numAsString))
         ? Number(costInput.state.numAsString)
@@ -50,24 +52,19 @@ function PaymentsContainer({
       savePaymentAction(user.uid || '', singlePayment).then(() => {
         if (costNameInput.current) costNameInput.current.value = '';
         costValueInput = '';
+        if (user?.uid) {
+          getPaymentsAction(user?.uid, isDefaultData);
+        }
       });
     }
   };
 
   const deleteCostItem = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    const name = e.currentTarget.getAttribute('data-name') || '';
     const id = e.currentTarget.getAttribute('data-id') || '';
-    const cost = Number(e.currentTarget.getAttribute('data-cost')) || -1;
-    const payment: IPayment = {
-      id,
-      name,
-      cost,
-      isDefault: false,
-      datetime: firebase.firestore.Timestamp.fromDate(new Date())
-    };
-    if (payment.name && isNumber(payment.cost)) {
-      deletePaymentsAction(payment);
+
+    if (id) {
+      deletePaymentsAction(id, user?.uid || '');
     }
   };
 

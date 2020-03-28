@@ -1,6 +1,6 @@
 import formatNumber, { IConfig } from './format-number';
 
-const defaultConfig: IConfig = { decimals: 0 };
+const defaultConfig: IConfig = { decimals: 2 };
 
 /**
  * Applies a currency format with thousands and decimal separators.

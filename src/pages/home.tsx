@@ -43,6 +43,8 @@ function HomePage({
 
   useEffect(() => {
     if (user && user.uid) {
+      console.log('firts get');
+
       getPaymentsAction(user.uid);
       getSettingsAction(user.uid);
     }
