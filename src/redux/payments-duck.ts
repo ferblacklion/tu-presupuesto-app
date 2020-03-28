@@ -5,6 +5,7 @@ import {
   deletePaymentService
 } from '../services/firebase';
 import { firestore } from 'firebase';
+import { sortFunction } from '../utils/sort';
 
 export const initialState: IPayments = {
   payments: []
@@ -90,14 +91,13 @@ export const savePaymentAction = (userId: string, payment: IPayment) => (
 export const getPaymentsAction = (userId: string, getDefault = false) => (
   dispatch: Dispatch
 ) => {
-  console.log('get default ', getDefault);
-
   return getUserPaymentService(userId, getDefault)
     .then(dataResponse => {
       const payments: IPayments =
         dataResponse !== undefined && Object.keys(dataResponse).length > 0
           ? dataResponse
           : { payments: [] };
+      payments.payments.sort(sortFunction);
       console.log('get payments actions --- ', payments);
       dispatch({ type: GET_PAYMENT, payload: payments });
     })

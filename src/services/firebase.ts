@@ -116,17 +116,14 @@ export function getUserPaymentService(
   getDefault: boolean
 ) {
   const db = getfirebaseDb();
-  console.log(getDefault);
 
   let query: firebase.firestore.Query<firebase.firestore.DocumentData> = db
     .collection(PAYMENTS_COLLETION + '/' + userId + '/' + montlyCollection)
-
     .where('cost', '>=', 0);
 
   if (getDefault) {
     query = db
       .collection(PAYMENTS_COLLETION + '/' + userId + '/' + montlyCollection)
-      .orderBy('datetime')
       .where('isDefault', '==', true);
   }
 
