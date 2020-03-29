@@ -47,8 +47,14 @@ function HomePage({
 
   useEffect(() => {
     if (user && user.uid) {
-      if (settings.cutOffDate === 0) getSettingsAction(user.uid);
-      if (settings.cutOffDate > 0) {
+      getSettingsAction(user.uid);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  useEffect(() => {
+    if (user && user.uid) {
+      if (settings.cutOffDate <= 31) {
         getPaymentsAction(user.uid, settings.cutOffDate, false);
       }
     }
@@ -76,6 +82,7 @@ function HomePage({
             title={'Agregar gastos'}
             user={user}
             payments={payments}
+            settings={settings}
           />
           <PaymentsStatus settings={settings} payments={payments} />
         </div>

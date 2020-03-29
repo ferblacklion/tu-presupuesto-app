@@ -12,11 +12,13 @@ import formatCurrency from '../utils/format-currency';
 
 import 'firebase/firestore';
 import firebase from 'firebase/app';
+import { ISettings } from '../definition/ISettings';
 
 export declare interface IPaymentsContainer {
   title: string;
   user: IUser | null;
   payments: IPayments;
+  settings: ISettings;
   deletePaymentsAction: (paymentId: string, userId: string) => Promise<void>;
   isDefaultData?: boolean;
   savePaymentAction: (userId: string, payment: IPayment) => Promise<void>;
@@ -34,7 +36,8 @@ function PaymentsContainer({
   deletePaymentsAction,
   isDefaultData = false,
   savePaymentAction,
-  getPaymentsAction
+  getPaymentsAction,
+  settings
 }: IPaymentsContainer) {
   let costValueInput = '';
   const costNameInput = useRef<HTMLInputElement>(null);
@@ -56,7 +59,8 @@ function PaymentsContainer({
         if (costNameInput.current) costNameInput.current.value = '';
         costValueInput = '';
         if (user?.uid) {
-          getPaymentsAction(user?.uid, 28, isDefaultData);
+          console.log(settings);
+          getPaymentsAction(user?.uid, settings.cutOffDate, isDefaultData);
         }
       });
     }

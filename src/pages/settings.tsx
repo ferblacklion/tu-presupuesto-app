@@ -115,6 +115,7 @@ const SettingsPage = ({
         user={user}
         payments={payments}
         isDefaultData={true}
+        settings={settings}
       />
     </div>
   );

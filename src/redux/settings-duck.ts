@@ -13,7 +13,7 @@ export declare interface ISettingsState extends ISettings {
 }
 const initialState: ISettingsState = {
   totalAmount: 0,
-  cutOffDate: 0,
+  cutOffDate: 31,
   success: false
 };
 
