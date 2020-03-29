@@ -20,7 +20,11 @@ export declare interface IPaymentsContainer {
   deletePaymentsAction: (paymentId: string, userId: string) => Promise<void>;
   isDefaultData?: boolean;
   savePaymentAction: (userId: string, payment: IPayment) => Promise<void>;
-  getPaymentsAction: (userId: string, isDefault: boolean) => Promise<void>;
+  getPaymentsAction: (
+    userId: string,
+    cutOffDate: number,
+    isDefault: boolean
+  ) => Promise<void>;
 }
 
 function PaymentsContainer({
@@ -39,7 +43,6 @@ function PaymentsContainer({
   const savePayments = () => {
     if (!user) return;
     const singlePayment: IPayment = {
-      id: '',
       name: costNameInput?.current?.value || '',
       cost: !isNaN(Number(costInput.state.numAsString))
         ? Number(costInput.state.numAsString)
@@ -53,7 +56,7 @@ function PaymentsContainer({
         if (costNameInput.current) costNameInput.current.value = '';
         costValueInput = '';
         if (user?.uid) {
-          getPaymentsAction(user?.uid, isDefaultData);
+          getPaymentsAction(user?.uid, 28, isDefaultData);
         }
       });
     }

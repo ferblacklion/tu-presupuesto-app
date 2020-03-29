@@ -17,7 +17,11 @@ export interface IHomeProps {
   payments: IPayments;
   settings: ISettings;
   getSettingsAction: (userId: string) => Promise<void>;
-  getPaymentsAction: (userId: string) => Promise<void>;
+  getPaymentsAction: (
+    userId: string,
+    cutOffDate: number,
+    onlyDefault: boolean
+  ) => Promise<void>;
 }
 
 function HomePage({
@@ -43,13 +47,13 @@ function HomePage({
 
   useEffect(() => {
     if (user && user.uid) {
-      console.log('firts get');
-
-      getPaymentsAction(user.uid);
-      getSettingsAction(user.uid);
+      if (settings.cutOffDate === 0) getSettingsAction(user.uid);
+      if (settings.cutOffDate > 0) {
+        getPaymentsAction(user.uid, settings.cutOffDate, false);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, settings.cutOffDate]);
 
   return (
     <div>

@@ -2,10 +2,11 @@ import { Dispatch } from 'redux';
 import {
   savePaymentsService,
   getUserPaymentService,
-  deletePaymentService
+  deletePaymentService,
+  getUserPaymentDefaultService
 } from '../services/firebase';
 import { firestore } from 'firebase';
-import { sortFunction } from '../utils/sort';
+import { sortFunByIsDefault } from '../utils/sort-by-is-default';
 
 export const initialState: IPayments = {
   payments: []
@@ -17,7 +18,7 @@ export const SAVE_PAYMENT = 'SAVE_PAYMENT';
 export const GET_PAYMENT = 'GET_PAYMENT';
 export const DELETE_PAYMENT = 'DELETE_PAYMENT';
 export declare interface IPayment {
-  id: string;
+  id?: string;
   name: string;
   cost: number;
   isDefault: boolean;
@@ -88,16 +89,42 @@ export const savePaymentAction = (userId: string, payment: IPayment) => (
     });
 };
 
-export const getPaymentsAction = (userId: string, getDefault = false) => (
-  dispatch: Dispatch
-) => {
-  return getUserPaymentService(userId, getDefault)
+export const getPaymentsAction = (
+  userId: string,
+  cutOffDate: number,
+  onlyDefault = false
+) => (dispatch: Dispatch) => {
+  if (!onlyDefault) {
+    return getUserPaymentDefaultService(userId)
+      .then(dataResponse => {
+        const payments: IPayments =
+          dataResponse !== undefined && Object.keys(dataResponse).length > 0
+            ? dataResponse
+            : { payments: [] };
+        return payments;
+      })
+      .then(defaultPayments => {
+        getUserPaymentService(userId, cutOffDate).then(res => {
+          const payments: IPayments =
+            res !== undefined && Object.keys(res).length > 0
+              ? { payments: [...defaultPayments.payments, ...res.payments] }
+              : { payments: [...defaultPayments.payments] };
+          console.log('get payments actions  --- ', payments);
+          dispatch({ type: GET_PAYMENT, payload: payments });
+        });
+      })
+      .catch(e => {
+        console.log(e.message);
+      });
+  }
+
+  return getUserPaymentDefaultService(userId)
     .then(dataResponse => {
       const payments: IPayments =
         dataResponse !== undefined && Object.keys(dataResponse).length > 0
           ? dataResponse
           : { payments: [] };
-      payments.payments.sort(sortFunction);
+      payments.payments.sort(sortFunByIsDefault);
       console.log('get payments actions --- ', payments);
       dispatch({ type: GET_PAYMENT, payload: payments });
     })

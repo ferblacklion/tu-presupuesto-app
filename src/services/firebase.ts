@@ -16,7 +16,7 @@ declare interface IFirebaseConfig {
 
 let firebaseClient: firebase.app.App;
 
-const montlyCollection = `${moment().month() + 1}-${moment().year()}`;
+const allPaymentColletionName = `all-payments`;
 
 function getFirebaseClient() {
   const firebaseConfig: IFirebaseConfig = {
@@ -92,7 +92,9 @@ export function saveUserSettingsService(userId: string, settings: ISettings) {
 export function savePaymentsService(userId: string, payment: IPayment) {
   const db = getfirebaseDb();
   const paymentsCol = db
-    .collection(PAYMENTS_COLLETION + '/' + userId + '/' + montlyCollection)
+    .collection(
+      PAYMENTS_COLLETION + '/' + userId + '/' + allPaymentColletionName
+    )
     .doc();
   return paymentsCol
     .set(payment)
@@ -111,21 +113,32 @@ const initialPayment: IPayment = {
   isDefault: false,
   datetime: firebase.firestore.Timestamp.fromDate(new Date())
 };
+const year = moment().year();
+const month = moment().month() + 1;
+
 export function getUserPaymentService(
   userId: string = '0',
-  getDefault: boolean
+  cutOffDate: number
 ) {
   const db = getfirebaseDb();
 
-  let query: firebase.firestore.Query<firebase.firestore.DocumentData> = db
-    .collection(PAYMENTS_COLLETION + '/' + userId + '/' + montlyCollection)
-    .where('cost', '>=', 0);
+  const startFullDate = firebase.firestore.Timestamp.fromDate(
+    new Date(`${year}-${month}-01`) //YYY-MM-DD
+  );
 
-  if (getDefault) {
-    query = db
-      .collection(PAYMENTS_COLLETION + '/' + userId + '/' + montlyCollection)
-      .where('isDefault', '==', true);
-  }
+  var endDate = new Date(`${year}-${month}-${cutOffDate}`);
+  endDate.setHours(23, 59, 59, 999);
+
+  const endFullDate = firebase.firestore.Timestamp.fromDate(endDate);
+
+  let query: firebase.firestore.Query<firebase.firestore.DocumentData> = db
+    .collection(
+      PAYMENTS_COLLETION + '/' + userId + '/' + allPaymentColletionName
+    )
+    .where('isDefault', '==', false)
+    .orderBy('datetime')
+    .startAt(startFullDate)
+    .endAt(endFullDate);
 
   return query
     .get()
@@ -134,6 +147,37 @@ export function getUserPaymentService(
       const dataResult: IPayments = {
         payments: []
       };
+
+      querySnapshot.forEach(doc => {
+        // doc.data() is never undefined for query doc snapshots
+        const data = doc.data();
+        dataResult.payments.push({ ...initialPayment, ...data, id: doc.id });
+      });
+      return dataResult;
+    })
+    .catch(e => {
+      console.log('service ', Error(e.message));
+    });
+}
+
+export function getUserPaymentDefaultService(userId: string = '0') {
+  const db = getfirebaseDb();
+
+  const query: firebase.firestore.Query<firebase.firestore.DocumentData> = db
+    .collection(
+      PAYMENTS_COLLETION + '/' + userId + '/' + allPaymentColletionName
+    )
+    .where('isDefault', '==', true)
+    .orderBy('datetime');
+
+  return query
+    .get()
+
+    .then(querySnapshot => {
+      const dataResult: IPayments = {
+        payments: []
+      };
+
       querySnapshot.forEach(doc => {
         // doc.data() is never undefined for query doc snapshots
         const data = doc.data();
@@ -150,7 +194,9 @@ export function deletePaymentService(id: string, userId: string) {
   const db = getfirebaseDb();
 
   return db
-    .collection(PAYMENTS_COLLETION + '/' + userId + '/' + montlyCollection)
+    .collection(
+      PAYMENTS_COLLETION + '/' + userId + '/' + allPaymentColletionName
+    )
     .doc(id)
     .delete()
     .then(function() {
