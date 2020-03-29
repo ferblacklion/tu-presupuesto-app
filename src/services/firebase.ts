@@ -115,21 +115,27 @@ const initialPayment: IPayment = {
 };
 const year = moment().year();
 const month = moment().month() + 1;
+const day = moment().date();
 
-export function getUserPaymentService(
+export function getUserPaymentServiceT(
   userId: string = '0',
   cutOffDate: number
 ) {
   const db = getfirebaseDb();
+  const isCurrentMonth = day <= cutOffDate;
+  const startDate = isCurrentMonth ? 1 : day;
+  const endMonth = isCurrentMonth ? month : month + 1;
 
   const startFullDate = firebase.firestore.Timestamp.fromDate(
-    new Date(`${year}-${month}-01`) //YYY-MM-DD
+    new Date(`${year}-${month}-${startDate}`) //YYY-MM-DD
   );
+  console.log('start ', startDate);
 
-  var endDate = new Date(`${year}-${month}-${cutOffDate}`);
+  var endDate = new Date(`${year}-${endMonth}-${cutOffDate}`);
   endDate.setHours(23, 59, 59, 999);
 
   const endFullDate = firebase.firestore.Timestamp.fromDate(endDate);
+  console.log('end', endDate);
 
   let query: firebase.firestore.Query<firebase.firestore.DocumentData> = db
     .collection(
@@ -144,6 +150,7 @@ export function getUserPaymentService(
     .get()
 
     .then(querySnapshot => {
+      //alert(querySnapshot.size);
       const dataResult: IPayments = {
         payments: []
       };

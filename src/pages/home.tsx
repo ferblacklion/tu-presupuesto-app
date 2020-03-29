@@ -3,7 +3,11 @@ import { connect } from 'react-redux';
 import { IUser } from '../definition/IUser';
 import { RootState } from '../redux/store';
 import { loginUserAction, loginFromStoreAction } from '../redux/user-duck';
-import { IPayments, getPaymentsAction } from '../redux/payments-duck';
+import {
+  IPayments,
+  getPaymentsAction,
+  getPaymentsDefaultAction
+} from '../redux/payments-duck';
 
 import PaymentsStatus from '../components/payments-status';
 import { ISettings } from '../definition/ISettings';
@@ -17,11 +21,8 @@ export interface IHomeProps {
   payments: IPayments;
   settings: ISettings;
   getSettingsAction: (userId: string) => Promise<void>;
-  getPaymentsAction: (
-    userId: string,
-    cutOffDate: number,
-    onlyDefault: boolean
-  ) => Promise<void>;
+  getPaymentsAction: (userId: string, cutOffDate: number) => Promise<void>;
+  getPaymentsDefaultAction: (userId: string) => Promise<void>;
 }
 
 function HomePage({
@@ -31,7 +32,8 @@ function HomePage({
   payments,
   settings,
   getSettingsAction,
-  getPaymentsAction
+  getPaymentsAction,
+  getPaymentsDefaultAction
 }: IHomeProps) {
   const initFetch = useCallback(() => {
     loginFromStoreAction();
@@ -54,9 +56,17 @@ function HomePage({
 
   useEffect(() => {
     if (user && user.uid) {
-      if (settings.cutOffDate <= 31) {
-        getPaymentsAction(user.uid, settings.cutOffDate, false);
-      }
+      //alert('get default');
+      getPaymentsDefaultAction(user.uid);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  useEffect(() => {
+    if (user && user.uid) {
+      //alert('get default');
+      if (settings.cutOffDate !== 31)
+        getPaymentsAction(user.uid, settings.cutOffDate);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, settings.cutOffDate]);
@@ -104,7 +114,8 @@ const dispatchToProps = {
   loginUserAction,
   loginFromStoreAction,
   getSettingsAction,
-  getPaymentsAction
+  getPaymentsAction,
+  getPaymentsDefaultAction
 };
 
 export default connect(mapStateToProps, dispatchToProps)(HomePage);

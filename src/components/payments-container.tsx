@@ -5,7 +5,8 @@ import { IUser } from '../definition/IUser';
 import {
   getPaymentsAction,
   deletePaymentsAction,
-  savePaymentAction
+  savePaymentAction,
+  getPaymentsDefaultAction
 } from '../redux/payments-duck';
 import { connect } from 'react-redux';
 import formatCurrency from '../utils/format-currency';
@@ -13,6 +14,7 @@ import formatCurrency from '../utils/format-currency';
 import 'firebase/firestore';
 import firebase from 'firebase/app';
 import { ISettings } from '../definition/ISettings';
+import moment from 'moment';
 
 export declare interface IPaymentsContainer {
   title: string;
@@ -22,11 +24,8 @@ export declare interface IPaymentsContainer {
   deletePaymentsAction: (paymentId: string, userId: string) => Promise<void>;
   isDefaultData?: boolean;
   savePaymentAction: (userId: string, payment: IPayment) => Promise<void>;
-  getPaymentsAction: (
-    userId: string,
-    cutOffDate: number,
-    isDefault: boolean
-  ) => Promise<void>;
+  getPaymentsAction: (userId: string, cutOffDate: number) => Promise<void>;
+  getPaymentsDefaultAction: (userId: string) => Promise<void>;
 }
 
 function PaymentsContainer({
@@ -37,7 +36,8 @@ function PaymentsContainer({
   isDefaultData = false,
   savePaymentAction,
   getPaymentsAction,
-  settings
+  settings,
+  getPaymentsDefaultAction
 }: IPaymentsContainer) {
   let costValueInput = '';
   const costNameInput = useRef<HTMLInputElement>(null);
@@ -59,8 +59,8 @@ function PaymentsContainer({
         if (costNameInput.current) costNameInput.current.value = '';
         costValueInput = '';
         if (user?.uid) {
-          console.log(settings);
-          getPaymentsAction(user?.uid, settings.cutOffDate, isDefaultData);
+          getPaymentsDefaultAction(user.uid);
+          getPaymentsAction(user.uid, settings.cutOffDate);
         }
       });
     }
@@ -117,7 +117,8 @@ function PaymentsContainer({
         <ul>
           {paymentsFiltered.payments.map((p, i: number) => (
             <li key={p.id || i}>
-              {p.name} ===> {formatCurrency(p.cost)}{' '}
+              {p.name} ===>{'   '} {formatCurrency(p.cost)}, {'   '} fecha:{' '}
+              {moment.unix(p.datetime.seconds).date()} {'-----'}
               <a
                 href="/"
                 data-name={p.name}
@@ -138,7 +139,8 @@ function PaymentsContainer({
 const dispatchToProps = {
   getPaymentsAction,
   deletePaymentsAction,
-  savePaymentAction
+  savePaymentAction,
+  getPaymentsDefaultAction
 };
 
 export default connect(null, dispatchToProps)(PaymentsContainer);

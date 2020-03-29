@@ -10,7 +10,7 @@ import { IUser } from '../definition/IUser';
 import { loginFromStoreAction } from '../redux/user-duck';
 import { ISettings } from '../definition/ISettings';
 import PaymentsContainer from '../components/payments-container';
-import { getPaymentsAction, IPayments } from '../redux/payments-duck';
+import { getPaymentsDefaultAction, IPayments } from '../redux/payments-duck';
 import NumberFormat from 'react-number-format';
 
 export declare interface ISettingsProps {
@@ -18,11 +18,7 @@ export declare interface ISettingsProps {
   user: IUser | null;
   saveSettingsAction: (uID: string, s: ISettings) => Promise<void>;
   getSettingsAction: (uID: string) => Promise<void>;
-  getPaymentsAction: (
-    uID: string,
-    cutOffDate: number,
-    isDefault: boolean
-  ) => Promise<void>;
+  getPaymentsDefaultAction: (uID: string) => Promise<void>;
   settings: ISettingsState;
   payments: IPayments;
 }
@@ -33,7 +29,7 @@ const SettingsPage = ({
   saveSettingsAction,
   getSettingsAction,
   settings,
-  getPaymentsAction,
+  getPaymentsDefaultAction,
   payments
 }: ISettingsProps) => {
   const cutOffDateElement = useRef<HTMLInputElement>(null);
@@ -51,7 +47,7 @@ const SettingsPage = ({
   useEffect(() => {
     if (user) {
       getSettingsAction(user.uid || '');
-      getPaymentsAction(user.uid || '', settings.cutOffDate, true);
+      getPaymentsDefaultAction(user.uid || '');
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -132,7 +128,7 @@ const dispatchToProps = {
   loginFromStoreAction,
   saveSettingsAction,
   getSettingsAction,
-  getPaymentsAction
+  getPaymentsDefaultAction
 };
 
 export default connect(mapStateToProps, dispatchToProps)(SettingsPage);
