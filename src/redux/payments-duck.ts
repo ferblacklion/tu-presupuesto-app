@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux';
 import {
   savePaymentsService,
-  getUserPaymentServiceT,
+  getUserPaymentService,
   deletePaymentService,
   getUserPaymentDefaultService
 } from '../services/firebase';
@@ -108,10 +108,7 @@ export const getPaymentsDefaultAction = (userId: string) => (
           ? dataResponse
           : { payments: [] };
 
-      //payments.payments.sort(sortFunByIsDefault);
-
       console.log('get payments default actions --- ', payments);
-      //alert(payments.payments.length);
       dispatch({ type: GET_PAYMENT_DEFAULT, payload: payments });
     })
     .catch(e => {
@@ -122,8 +119,7 @@ export const getPaymentsDefaultAction = (userId: string) => (
 export const getPaymentsAction = (userId: string, cutOffDate: number) => (
   dispatch: Dispatch
 ) => {
-  //alert('get payment falses');
-  return getUserPaymentServiceT(userId, cutOffDate)
+  return getUserPaymentService(userId, cutOffDate)
     .then(res => {
       const payments: IPayments =
         res !== undefined && Object.keys(res).length > 0

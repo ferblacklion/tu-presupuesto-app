@@ -14,7 +14,6 @@ import formatCurrency from '../utils/format-currency';
 import 'firebase/firestore';
 import firebase from 'firebase/app';
 import { ISettings } from '../definition/ISettings';
-import moment from 'moment';
 
 export declare interface IPaymentsContainer {
   title: string;
@@ -117,8 +116,7 @@ function PaymentsContainer({
         <ul>
           {paymentsFiltered.payments.map((p, i: number) => (
             <li key={p.id || i}>
-              {p.name} ===>{'   '} {formatCurrency(p.cost)}, {'   '} fecha:{' '}
-              {moment.unix(p.datetime.seconds).date()} {'-----'}
+              {p.name} ===>{'   '} {formatCurrency(p.cost)}
               <a
                 href="/"
                 data-name={p.name}

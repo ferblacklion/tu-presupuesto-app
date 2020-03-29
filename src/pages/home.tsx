@@ -56,7 +56,6 @@ function HomePage({
 
   useEffect(() => {
     if (user && user.uid) {
-      //alert('get default');
       getPaymentsDefaultAction(user.uid);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,7 +63,6 @@ function HomePage({
 
   useEffect(() => {
     if (user && user.uid) {
-      //alert('get default');
       if (settings.cutOffDate !== 31)
         getPaymentsAction(user.uid, settings.cutOffDate);
     }
