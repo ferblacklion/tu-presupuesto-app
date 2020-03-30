@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import NumberFormat from 'react-number-format';
 import { IPayment, IPayments } from '../redux/payments-duck';
 import { IUser } from '../definition/IUser';
@@ -14,6 +14,7 @@ import formatCurrency from '../utils/format-currency';
 import 'firebase/firestore';
 import firebase from 'firebase/app';
 import { ISettings } from '../definition/ISettings';
+import moment from 'moment';
 
 export declare interface IPaymentsContainer {
   title: string;
@@ -27,6 +28,11 @@ export declare interface IPaymentsContainer {
   getPaymentsDefaultAction: (userId: string) => Promise<void>;
 }
 
+export declare interface IFormPaymentState {
+  cost: string;
+  name: string;
+}
+
 function PaymentsContainer({
   title,
   user,
@@ -38,30 +44,41 @@ function PaymentsContainer({
   settings,
   getPaymentsDefaultAction
 }: IPaymentsContainer) {
-  let costValueInput = '';
-  const costNameInput = useRef<HTMLInputElement>(null);
+  const [formData, setFormData] = useState<IFormPaymentState>({
+    name: '',
+    cost: ''
+  });
+
   let costInput: any = null;
 
   const savePayments = () => {
     if (!user) return;
+    const number = Number(costInput.state.numAsString);
+
     const singlePayment: IPayment = {
-      name: costNameInput?.current?.value || '',
-      cost: !isNaN(Number(costInput.state.numAsString))
-        ? Number(costInput.state.numAsString)
-        : 0,
+      name: formData.name,
+      cost: !isNaN(number) ? number : 0,
       isDefault: isDefaultData,
-      datetime: firebase.firestore.Timestamp.fromDate(new Date())
+      datetime: firebase.firestore.Timestamp.fromDate(moment().toDate())
     };
 
+    if (singlePayment.cost > settings.totalAmount) {
+      // TODO: show error to the user
+      alert('La cantidad es muy elevada al presupuesto establecido');
+      setFormData({ name: '', cost: '' });
+      return;
+    }
+
     if (singlePayment.name.trim() && singlePayment.cost > 0) {
-      savePaymentAction(user.uid || '', singlePayment).then(() => {
-        if (costNameInput.current) costNameInput.current.value = '';
-        costValueInput = '';
-        if (user?.uid) {
-          getPaymentsDefaultAction(user.uid);
-          getPaymentsAction(user.uid, settings.cutOffDate);
-        }
-      });
+      if (user.uid)
+        savePaymentAction(user.uid, singlePayment).then(() => {
+          setFormData({ name: '', cost: '' });
+
+          if (user.uid) {
+            getPaymentsDefaultAction(user.uid);
+            getPaymentsAction(user.uid, settings.cutOffDate);
+          }
+        });
     }
   };
 
@@ -69,16 +86,18 @@ function PaymentsContainer({
     e.preventDefault();
     const id = e.currentTarget.getAttribute('data-id') || '';
 
-    if (id) {
-      deletePaymentsAction(id, user?.uid || '');
+    if (id && user && user.uid) {
+      deletePaymentsAction(id, user.uid);
     }
   };
 
-  let paymentsFiltered: IPayments = { payments: [] };
+  const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ name: e.target.value, cost: formData.cost });
+  };
 
-  if (payments !== undefined && payments.payments !== undefined) {
-    paymentsFiltered.payments = payments.payments;
-  }
+  const onChangeCost = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ name: formData.name, cost: e.target.value });
+  };
 
   return (
     <div>
@@ -86,49 +105,47 @@ function PaymentsContainer({
       <p>
         <label htmlFor="cost-name">Nombre del gasto </label>
         <input
+          onChange={onChangeName}
           minLength={3}
-          ref={costNameInput}
           id="cost-name"
           type="text"
+          value={formData.name}
         />{' '}
         <br />
       </p>
       <p>
         <label htmlFor="cost">Precio </label>
         <NumberFormat
+          onChange={onChangeCost}
           ref={(el: any) => (costInput = el)}
           decimalScale={2}
           thousandSeparator={true}
           id="cost"
           prefix={'Q'}
-          value={costValueInput}
+          value={formData.cost}
           inputMode={'decimal'}
           allowNegative={false}
         />
       </p>
       <br />
       <p>
-        <button onClick={savePayments}>+</button>
+        <button onClick={savePayments}>GUARDAR</button>
       </p>
       <br />
       <div>
-        LISTA DE GASTOS
-        <ul>
-          {paymentsFiltered.payments.map((p, i: number) => (
-            <li key={p.id || i}>
-              {p.name} ===>{'   '} {formatCurrency(p.cost)}
-              <a
-                href="/"
-                data-name={p.name}
-                data-id={p.id}
-                data-cost={p.cost}
-                onClick={deleteCostItem}
-              >
-                Eliminar
-              </a>
-            </li>
-          ))}
-        </ul>
+        <div>
+          <h2>LISTA DE GASTOS</h2>
+          <ul>
+            {payments.payments.map((p, i: number) => (
+              <li key={p.id || i}>
+                {p.name} ===>{'   '} {formatCurrency(p.cost)}{' '}
+                <a href="/" data-id={p.id} onClick={deleteCostItem}>
+                  Eliminar
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );

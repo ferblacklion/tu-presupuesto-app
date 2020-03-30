@@ -80,7 +80,7 @@ function HomePage({
             src={user?.photoURL || ''}
             alt={user?.displayName || ''}
           />
-          <p>pages:</p>
+          <h2>Menu:</h2>
           <p>
             <a href="/settings" title="settings">
               Settings

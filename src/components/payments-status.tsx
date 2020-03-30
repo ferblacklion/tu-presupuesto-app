@@ -22,7 +22,7 @@ function PaymentsStatus({ settings, payments }: IPaymentsStatus) {
 
   return (
     <div>
-      <h2>Status</h2>
+      <h2>Estados</h2>
       <div>Presupuesto: {formatCurrency(settings.totalAmount)}</div>
       <div>---------------------------------------</div>
       <div>Gasto Total: {formatCurrency(total)}</div>

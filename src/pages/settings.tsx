@@ -73,10 +73,12 @@ const SettingsPage = ({
 
   return (
     <div>
-      <h1>Settings</h1>
-      <p>
-        <a href="/">Inicio</a>
-      </p>
+      <h2>Menu</h2>
+
+      <a href="/">Inicio</a>
+
+      <h1>Configuraciones</h1>
+
       {settings.success && (
         <>
           <p>

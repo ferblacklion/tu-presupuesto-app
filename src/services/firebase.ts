@@ -144,20 +144,22 @@ export function getUserPaymentService(
     endDateCutOffDate = daysInMonth > cutOffDate ? cutOffDate : daysInMonth;
   }
 
-  console.log('startDateCutOffDate', startDateCutOffDate);
-  console.log('endDateCutOffDate', endDateCutOffDate);
+  let startDate: Date;
+  let endDate: Date;
 
-  const startDate = moment(
-    `${year}-${startMonth}-${startDateCutOffDate}`,
-    'YYYY-MM-DD'
-  ).toDate();
+  try {
+    startDate = moment(
+      `${year}-${startMonth}-${startDateCutOffDate}`,
+      'YYYY-MM-DD'
+    ).toDate();
 
-  const endDate = moment(
-    `${year}-${endMonth}-${endDateCutOffDate}`,
-    'YYYY-MM-DD'
-  )
-    .endOf('day')
-    .toDate();
+    endDate = moment(`${year}-${endMonth}-${endDateCutOffDate}`, 'YYYY-MM-DD')
+      .endOf('day')
+      .toDate();
+  } catch (error) {
+    console.log(error);
+    return Promise.reject(Error(error));
+  }
 
   console.log('startDate', startDate);
   console.log('endDate', endDate);
