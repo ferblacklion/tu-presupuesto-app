@@ -122,17 +122,45 @@ export function getUserPaymentService(
   cutOffDate: number
 ) {
   const db = getfirebaseDb();
-  const isCurrentMonth = day <= cutOffDate;
-  const startDay = isCurrentMonth ? 1 : day;
-  const endMonth = isCurrentMonth ? month : month + 1;
+  const pastOfDate = day > cutOffDate;
+  const startMonth = pastOfDate ? month : month - 1;
+  const endMonth = pastOfDate ? month + 1 : month;
 
-  const startDate = moment(`${year}-${month}-${startDay}`, 'YYYY-MM-DD')
-    .startOf('day')
-    .toDate();
+  let startDateCutOffDate = cutOffDate;
+  let endDateCutOffDate = cutOffDate;
 
-  const endDate = moment(`${year}-${endMonth}-${cutOffDate}`, 'YYYY-MM-DD')
+  const validateDates = [28, 30, 31];
+
+  if (validateDates.includes(startDateCutOffDate)) {
+    const daysInMonth = moment(
+      `${year}-${startMonth}`,
+      'YYYY-MM'
+    ).daysInMonth();
+    startDateCutOffDate = daysInMonth > cutOffDate ? cutOffDate : daysInMonth;
+  }
+
+  if (validateDates.includes(endDateCutOffDate)) {
+    const daysInMonth = moment(`${year}-${endMonth}`, 'YYYY-MM').daysInMonth();
+    endDateCutOffDate = daysInMonth > cutOffDate ? cutOffDate : daysInMonth;
+  }
+
+  console.log('startDateCutOffDate', startDateCutOffDate);
+  console.log('endDateCutOffDate', endDateCutOffDate);
+
+  const startDate = moment(
+    `${year}-${startMonth}-${startDateCutOffDate}`,
+    'YYYY-MM-DD'
+  ).toDate();
+
+  const endDate = moment(
+    `${year}-${endMonth}-${endDateCutOffDate}`,
+    'YYYY-MM-DD'
+  )
     .endOf('day')
     .toDate();
+
+  console.log('startDate', startDate);
+  console.log('endDate', endDate);
 
   const startFullDate = firebase.firestore.Timestamp.fromDate(startDate);
   const endFullDate = firebase.firestore.Timestamp.fromDate(endDate);
@@ -144,7 +172,7 @@ export function getUserPaymentService(
     .where('isDefault', '==', false)
     .orderBy('datetime')
     .startAt(startFullDate)
-    .endAt(endFullDate);
+    .endBefore(endFullDate);
 
   return query
     .get()
