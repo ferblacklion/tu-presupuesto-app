@@ -25,7 +25,7 @@ function PaymentsStatus({ settings, payments }: IPaymentsStatus) {
       <h2>Estados</h2>
       <div>Presupuesto: {formatCurrency(settings.totalAmount)}</div>
       <div>---------------------------------------</div>
-      <div>Gasto Total: {formatCurrency(total)}</div>
+      <div>Monto Total: {formatCurrency(total)}</div>
       <div>Monto restante: {formatCurrency(settings.totalAmount - total)}</div>
     </div>
   );

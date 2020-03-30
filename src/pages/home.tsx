@@ -82,8 +82,8 @@ function HomePage({
           />
           <h2>Menu:</h2>
           <p>
-            <a href="/settings" title="settings">
-              Settings
+            <a href="/settings" title="Configuraciones">
+              Configuraciones
             </a>
           </p>
           <PaymentsContainer

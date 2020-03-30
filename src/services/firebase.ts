@@ -126,6 +126,8 @@ export function getUserPaymentService(
   const startMonth = pastOfDate ? month : month - 1;
   const endMonth = pastOfDate ? month + 1 : month;
 
+  console.log(pastOfDate);
+
   let startDateCutOffDate = cutOffDate;
   let endDateCutOffDate = cutOffDate;
 
@@ -174,7 +176,7 @@ export function getUserPaymentService(
     .where('isDefault', '==', false)
     .orderBy('datetime')
     .startAt(startFullDate)
-    .endBefore(endFullDate);
+    .endAt(endFullDate);
 
   return query
     .get()
