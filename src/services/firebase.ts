@@ -153,7 +153,9 @@ export function getUserPaymentService(
     startDate = moment(
       `${year}-${startMonth}-${startDateCutOffDate}`,
       'YYYY-MM-DD'
-    ).toDate();
+    )
+      .endOf('day')
+      .toDate();
 
     endDate = moment(`${year}-${endMonth}-${endDateCutOffDate}`, 'YYYY-MM-DD')
       .endOf('day')
@@ -175,7 +177,7 @@ export function getUserPaymentService(
     )
     .where('isDefault', '==', false)
     .orderBy('datetime')
-    .startAt(startFullDate)
+    .startAfter(startFullDate)
     .endAt(endFullDate);
 
   return query
