@@ -66,7 +66,7 @@ export default function reducer(
 ) {
   switch (action.type) {
     case SAVE_PAYMENT:
-      return { ...state, payments: [...state.payments, action.payload] };
+      return { ...state };
     case GET_PAYMENT:
       return { payments: [...state.payments, ...action.payload.payments] };
     case GET_PAYMENT_DEFAULT:
@@ -75,7 +75,6 @@ export default function reducer(
       const paymentsFiltered = state.payments.filter(
         (payment: IPayment) => payment.id !== action.payload.id
       );
-      //console.log('delete', action.payload.id);
       return { payments: [...paymentsFiltered] };
     default:
       return { ...state };

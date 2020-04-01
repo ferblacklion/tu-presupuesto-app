@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
   saveSettingsAction,
@@ -11,7 +11,7 @@ import { loginFromStoreAction } from '../redux/user-duck';
 import { ISettings } from '../definition/ISettings';
 import PaymentsContainer from '../components/payments-container';
 import { getPaymentsDefaultAction, IPayments } from '../redux/payments-duck';
-import NumberFormat from 'react-number-format';
+import NumberFormat, { NumberFormatValues } from 'react-number-format';
 
 export declare interface ISettingsProps {
   loginFromStoreAction: () => Promise<void>;
@@ -32,10 +32,8 @@ const SettingsPage = ({
   getPaymentsDefaultAction,
   payments
 }: ISettingsProps) => {
-  const cutOffDateElement = useRef<HTMLInputElement>(null);
-  let totalAmountElement: any = null;
-  const [cutOffDate, setCutOffDate] = useState(0);
-  const [totalAmount, setTotalAmount] = useState(0);
+  let totalAmountElement: NumberFormat;
+  let inputCutOffDate: NumberFormat;
 
   useEffect(() => {
     const initFetch = () => {
@@ -54,21 +52,40 @@ const SettingsPage = ({
   }, [user]);
 
   useEffect(() => {
-    setCutOffDate(settings.cutOffDate);
-    setTotalAmount(settings.totalAmount);
+    if (inputCutOffDate)
+      inputCutOffDate.setState({ value: settings.cutOffDate });
+    if (totalAmountElement)
+      totalAmountElement.setState({ value: `Q ${settings.totalAmount}` });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings]);
 
   const saveUserData = () => {
-    const currentUserSettings: ISettings = {
-      cutOffDate: cutOffDateElement.current?.value
-        ? Number(cutOffDateElement.current?.value)
-        : 0,
-      totalAmount: totalAmountElement.state.numAsString
-        ? Number(totalAmountElement.state.numAsString)
-        : 0
-    };
+    const totalAmount = Number(totalAmountElement.state.numAsString);
+    const cutOffDate = Number(inputCutOffDate.state.value);
 
-    if (user) saveSettingsAction(user?.uid || '0', currentUserSettings);
+    if (user && user?.uid)
+      saveSettingsAction(user.uid, {
+        cutOffDate: !isNaN(cutOffDate) ? cutOffDate : 0,
+        totalAmount: !isNaN(totalAmount) ? totalAmount : 0
+      });
+  };
+
+  const onValueChange = (values: NumberFormatValues) => {
+    const { value, floatValue } = values;
+
+    if (floatValue !== undefined && floatValue <= 31) {
+      inputCutOffDate.setState({ floatValue, value });
+      return;
+    }
+
+    if (floatValue !== undefined && floatValue > 31) {
+      inputCutOffDate.setState({
+        floatValue: inputCutOffDate.state.floatValue,
+        value: inputCutOffDate.state.value
+      });
+      return;
+    }
   };
 
   return (
@@ -83,24 +100,26 @@ const SettingsPage = ({
         <>
           <p>
             <label htmlFor="">Fecha corte:</label>
-            <input
-              ref={cutOffDateElement}
-              type="number"
+            <NumberFormat
+              ref={(inst: NumberFormat) => (inputCutOffDate = inst)}
               name="cut-off-date"
               minLength={2}
-              defaultValue={cutOffDate}
+              value={''}
+              inputMode={'numeric'}
+              decimalSeparator={false}
+              onValueChange={onValueChange}
             />
           </p>
           <p>
             <label htmlFor="">Monto total:</label>
 
             <NumberFormat
-              ref={(el: any) => (totalAmountElement = el)}
+              ref={(el: NumberFormat) => (totalAmountElement = el)}
               decimalScale={2}
               thousandSeparator={true}
               id="total-amount"
               prefix={'Q'}
-              value={totalAmount}
+              value={''}
               inputMode={'decimal'}
               allowNegative={false}
             />

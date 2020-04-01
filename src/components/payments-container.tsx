@@ -76,7 +76,8 @@ function PaymentsContainer({
 
           if (user.uid) {
             getPaymentsDefaultAction(user.uid);
-            getPaymentsAction(user.uid, settings.cutOffDate);
+            if (!isDefaultData)
+              getPaymentsAction(user.uid, settings.cutOffDate);
           }
         });
     }
@@ -138,7 +139,7 @@ function PaymentsContainer({
           <ul>
             {payments.payments.map((p, i: number) => (
               <li key={p.id || i}>
-                {i + 1}.{p.name} ===>{'   '} {formatCurrency(p.cost)}{' '}
+                {i + 1}). {p.name} ===>{'   '} {formatCurrency(p.cost)}{' '}
                 <a href="/" data-id={p.id} onClick={deleteCostItem}>
                   Eliminar
                 </a>
