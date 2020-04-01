@@ -122,16 +122,29 @@ export function getUserPaymentService(
   cutOffDate: number
 ) {
   const db = getfirebaseDb();
-  const pastOfDate = day > cutOffDate;
-  const startMonth = pastOfDate ? month : month - 1;
-  const endMonth = pastOfDate ? month + 1 : month;
-
-  console.log(pastOfDate);
 
   let startDateCutOffDate = cutOffDate;
   let endDateCutOffDate = cutOffDate;
 
   const validateDates = [28, 30, 31];
+
+  let cutOffDayValidated = cutOffDate;
+  if (validateDates.includes(cutOffDate)) {
+    const daysInMonth = moment(`${year}-${month}`, 'YYYY-MM').daysInMonth();
+    cutOffDayValidated = daysInMonth > cutOffDate ? cutOffDate : daysInMonth;
+  }
+  console.log('cutOffDayValidated', cutOffDayValidated);
+  console.log('currentday', day);
+  console.log('month', month);
+
+  const day1 = moment(`${year}-${month}-${day}`, 'YYYY-MM-DD'); // current
+  const day2 = moment(`${year}-${month}-${cutOffDayValidated}`, 'YYYY-MM-DD'); // cutt of date
+  const isPassedDate = day1.isAfter(day2);
+
+  console.log('isPassedDate', isPassedDate);
+
+  const startMonth = isPassedDate ? month : month - 1; // is passed current month
+  const endMonth = isPassedDate ? month + 1 : month; // is passed next month
 
   if (validateDates.includes(startDateCutOffDate)) {
     const daysInMonth = moment(
@@ -145,6 +158,8 @@ export function getUserPaymentService(
     const daysInMonth = moment(`${year}-${endMonth}`, 'YYYY-MM').daysInMonth();
     endDateCutOffDate = daysInMonth > cutOffDate ? cutOffDate : daysInMonth;
   }
+  console.log('startDateCutOffDate', startDateCutOffDate);
+  console.log('endDateCutOffDate', endDateCutOffDate);
 
   let startDate: Date;
   let endDate: Date;

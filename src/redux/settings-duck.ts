@@ -13,7 +13,7 @@ export declare interface ISettingsState extends ISettings {
 }
 const initialState: ISettingsState = {
   totalAmount: 0,
-  cutOffDate: 31,
+  cutOffDate: 0,
   success: false
 };
 
@@ -96,7 +96,7 @@ export const getSettingsAction = (userId: string) => async (
       responseData !== undefined && Object.keys(responseData).length > 0
         ? (responseData as ISettings)
         : { totalAmount: 0, cutOffDate: 0 };
-    console.log('get settins actions ---', settings);
+    //console.log('get settins actions ---', settings);
 
     dispatch({ type: GET_SETTINGS, payload: settings });
     dispatch({ type: SETTINGS_FETCHING, fetching: true });

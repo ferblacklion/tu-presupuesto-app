@@ -63,7 +63,7 @@ function HomePage({
 
   useEffect(() => {
     if (user && user.uid) {
-      if (settings.cutOffDate !== 31)
+      if (settings.cutOffDate > 0)
         getPaymentsAction(user.uid, settings.cutOffDate);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
