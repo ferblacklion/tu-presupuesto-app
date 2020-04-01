@@ -10,8 +10,7 @@ import {
 } from '../redux/payments-duck';
 
 import PaymentsStatus from '../components/payments-status';
-import { ISettings } from '../definition/ISettings';
-import { getSettingsAction } from '../redux/settings-duck';
+import { getSettingsAction, ISettingsState } from '../redux/settings-duck';
 import PaymentsContainer from '../components/payments-container';
 
 export interface IHomeProps {
@@ -19,7 +18,7 @@ export interface IHomeProps {
   loginUserAction: () => Promise<void>;
   loginFromStoreAction: () => Promise<void>;
   payments: IPayments;
-  settings: ISettings;
+  settings: ISettingsState;
   getSettingsAction: (userId: string) => Promise<void>;
   getPaymentsAction: (userId: string, cutOffDate: number) => Promise<void>;
   getPaymentsDefaultAction: (userId: string) => Promise<void>;
@@ -68,6 +67,20 @@ function HomePage({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, settings.cutOffDate]);
+
+  useEffect(() => {
+    console.log(settings);
+
+    if (
+      settings.success === true &&
+      (settings.cutOffDate === 0 || settings.totalAmount === 0)
+    ) {
+      alert(
+        'Debes de configurar tu fecha de corte y presupuesto antes de utilizar la app.'
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings.success]);
 
   return (
     <div>

@@ -67,7 +67,7 @@ export default function reducer(
 ) {
   switch (action.type) {
     case GET_SETTINGS:
-      return { ...action.payload };
+      return { ...action.payload, success: false };
     case SAVE_SETTINGS:
       return { ...action.payload };
 
@@ -96,7 +96,7 @@ export const getSettingsAction = (userId: string) => async (
       responseData !== undefined && Object.keys(responseData).length > 0
         ? (responseData as ISettings)
         : { totalAmount: 0, cutOffDate: 0 };
-    //console.log('get settins actions ---', settings);
+    console.log('get settins actions ---', settings);
 
     dispatch({ type: GET_SETTINGS, payload: settings });
     dispatch({ type: SETTINGS_FETCHING, fetching: true });
