@@ -138,7 +138,7 @@ function PaymentsContainer({
           <ul>
             {payments.payments.map((p, i: number) => (
               <li key={p.id || i}>
-                {p.name} ===>{'   '} {formatCurrency(p.cost)}{' '}
+                {i + 1}.{p.name} ===>{'   '} {formatCurrency(p.cost)}{' '}
                 <a href="/" data-id={p.id} onClick={deleteCostItem}>
                   Eliminar
                 </a>
