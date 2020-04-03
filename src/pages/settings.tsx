@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import {
   saveSettingsAction,
@@ -23,6 +23,11 @@ export declare interface ISettingsProps {
   payments: IPayments;
 }
 
+const initialValue = {
+  totalAmount: 0,
+  cutOffDate: 0
+};
+
 const SettingsPage = ({
   user,
   loginFromStoreAction,
@@ -34,6 +39,8 @@ const SettingsPage = ({
 }: ISettingsProps) => {
   let totalAmountElement: NumberFormat;
   let inputCutOffDate: NumberFormat;
+
+  const [state, setState] = useState(initialValue);
 
   useEffect(() => {
     const initFetch = () => {
@@ -52,13 +59,21 @@ const SettingsPage = ({
   }, [user]);
 
   useEffect(() => {
-    if (inputCutOffDate)
+    if (inputCutOffDate) {
       inputCutOffDate.setState({ value: settings.cutOffDate });
-    if (totalAmountElement)
-      totalAmountElement.setState({ value: `Q ${settings.totalAmount}` });
+    }
+    if (totalAmountElement) {
+      totalAmountElement.setState({
+        value: `Q${settings.totalAmount}`
+      });
+    }
+    setState({
+      cutOffDate: settings.cutOffDate,
+      totalAmount: settings.totalAmount
+    });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings]);
+  }, [settings.success]);
 
   const saveUserData = () => {
     const totalAmount = Number(totalAmountElement.state.numAsString);
@@ -72,19 +87,17 @@ const SettingsPage = ({
   };
 
   const onValueChange = (values: NumberFormatValues) => {
-    const { value, floatValue } = values;
+    const { value } = values;
 
-    if (floatValue !== undefined && floatValue <= 31) {
-      inputCutOffDate.setState({ floatValue, value });
-      return;
+    if (inputCutOffDate !== undefined && value) {
+      inputCutOffDate.setState({ value });
     }
 
-    if (floatValue !== undefined && floatValue > 31) {
+    if (inputCutOffDate !== undefined && value) {
       inputCutOffDate.setState({
         floatValue: inputCutOffDate.state.floatValue,
         value: inputCutOffDate.state.value
       });
-      return;
     }
   };
 
@@ -104,7 +117,7 @@ const SettingsPage = ({
               ref={(inst: NumberFormat) => (inputCutOffDate = inst)}
               name="cut-off-date"
               minLength={2}
-              value={''}
+              value={state.cutOffDate}
               inputMode={'numeric'}
               decimalSeparator={false}
               onValueChange={onValueChange}
@@ -119,7 +132,7 @@ const SettingsPage = ({
               thousandSeparator={true}
               id="total-amount"
               prefix={'Q'}
-              value={''}
+              value={state.totalAmount}
               inputMode={'decimal'}
               allowNegative={false}
             />
