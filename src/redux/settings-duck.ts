@@ -78,7 +78,7 @@ export default function reducer(
       return { ...state, success: false };
 
     default:
-      return { ...state };
+      return state;
   }
 }
 

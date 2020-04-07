@@ -60,7 +60,9 @@ const SettingsPage = ({
 
   useEffect(() => {
     if (inputCutOffDate) {
-      inputCutOffDate.setState({ value: settings.cutOffDate });
+      inputCutOffDate.setState({
+        value: settings.cutOffDate
+      });
     }
     if (totalAmountElement) {
       totalAmountElement.setState({
@@ -87,15 +89,12 @@ const SettingsPage = ({
   };
 
   const onValueChange = (values: NumberFormatValues) => {
-    const { value } = values;
+    const { value, floatValue = 0 } = values;
 
-    if (inputCutOffDate !== undefined && value) {
+    if (inputCutOffDate !== undefined && floatValue < 31) {
       inputCutOffDate.setState({ value });
-    }
-
-    if (inputCutOffDate !== undefined && value) {
+    } else if (inputCutOffDate !== undefined && floatValue > 31) {
       inputCutOffDate.setState({
-        floatValue: inputCutOffDate.state.floatValue,
         value: inputCutOffDate.state.value
       });
     }

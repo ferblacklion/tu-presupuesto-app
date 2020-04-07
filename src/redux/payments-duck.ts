@@ -77,7 +77,7 @@ export default function reducer(
       );
       return { payments: [...paymentsFiltered] };
     default:
-      return { ...state };
+      return state;
   }
 }
 

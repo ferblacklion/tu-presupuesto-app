@@ -6,6 +6,7 @@ import { IUser } from '../definition/IUser';
 import { ISettings } from '../definition/ISettings';
 import { IPayments } from './payments-duck';
 import paymentsReducer from './payments-duck';
+import reduxImmutableStateInvariant from 'redux-immutable-state-invariant';
 
 declare global {
   interface Window {
@@ -27,7 +28,10 @@ export type RootState = ReturnType<typeof rootReducer>;
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export default function generateStore() {
-  return createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
+  return createStore(
+    rootReducer,
+    composeEnhancers(applyMiddleware(reduxImmutableStateInvariant(), thunk))
+  );
 }
 export function generateStoreProd() {
   return createStore(rootReducer, applyMiddleware(thunk));
