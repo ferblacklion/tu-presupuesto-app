@@ -117,6 +117,7 @@ const year = moment().year();
 const month = moment().month() + 1;
 const day = moment().date();
 
+const debug_query = false;
 export function getUserPaymentService(
   userId: string = '0',
   cutOffDate: number
@@ -133,15 +134,15 @@ export function getUserPaymentService(
     const daysInMonth = moment(`${year}-${month}`, 'YYYY-MM').daysInMonth();
     cutOffDayValidated = daysInMonth > cutOffDate ? cutOffDate : daysInMonth;
   }
-  console.log('cutOffDayValidated', cutOffDayValidated);
-  console.log('currentday', day);
-  console.log('month', month);
+  if (debug_query) console.log('cutOffDayValidated', cutOffDayValidated);
+  if (debug_query) console.log('currentday', day);
+  if (debug_query) console.log('month', month);
 
   const day1 = moment(`${year}-${month}-${day}`, 'YYYY-MM-DD'); // current
   const day2 = moment(`${year}-${month}-${cutOffDayValidated}`, 'YYYY-MM-DD'); // cutt of date
   const isPassedDate = day1.isAfter(day2);
 
-  console.log('isPassedDate', isPassedDate);
+  if (debug_query) console.log('isPassedDate', isPassedDate);
 
   const startMonth = isPassedDate ? month : month - 1; // is passed current month
   const endMonth = isPassedDate ? month + 1 : month; // is passed next month
@@ -158,8 +159,9 @@ export function getUserPaymentService(
     const daysInMonth = moment(`${year}-${endMonth}`, 'YYYY-MM').daysInMonth();
     endDateCutOffDate = daysInMonth > cutOffDate ? cutOffDate : daysInMonth;
   }
-  console.log('startDateCutOffDate', startDateCutOffDate);
-  console.log('endDateCutOffDate', endDateCutOffDate);
+
+  if (debug_query) console.log('startDateCutOffDate', startDateCutOffDate);
+  if (debug_query) console.log('endDateCutOffDate', endDateCutOffDate);
 
   let startDate: Date;
   let endDate: Date;

@@ -48,10 +48,12 @@ function HomePage({
 
   useEffect(() => {
     if (user && user.uid) {
-      getSettingsAction(user.uid);
+      if (!settings.success) {
+        getSettingsAction(user.uid);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, settings.success]);
 
   useEffect(() => {
     if (user && user.uid) {
@@ -69,8 +71,6 @@ function HomePage({
   }, [user, settings.cutOffDate]);
 
   useEffect(() => {
-    console.log(settings);
-
     if (
       settings.success === true &&
       (settings.cutOffDate === 0 || settings.totalAmount === 0)

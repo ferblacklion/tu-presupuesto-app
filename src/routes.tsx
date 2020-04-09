@@ -10,7 +10,7 @@ export default function Routes() {
         <Route exact path="/">
           <HomePage />
         </Route>
-        <Route exact path="/settings/">
+        <Route path="/settings/">
           <SettingsPage />
         </Route>
         <Route component={() => <h1>404.. This page is not found!</h1>} />

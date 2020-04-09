@@ -107,7 +107,7 @@ export const getPaymentsDefaultAction = (userId: string) => (
           ? dataResponse
           : { payments: [] };
 
-      console.log('get payments default actions --- ', payments);
+      //console.log('get payments default actions --- ', payments);
       dispatch({ type: GET_PAYMENT_DEFAULT, payload: payments });
     })
     .catch(e => {
@@ -125,8 +125,7 @@ export const getPaymentsAction = (userId: string, cutOffDate: number) => (
           ? res
           : { payments: [] };
 
-      //alert(payments.payments.length);
-      console.log('get payments actions  --- ', payments);
+      //console.log('get payments actions  --- ', payments);
       dispatch({ type: GET_PAYMENT, payload: payments });
     })
     .catch(e => {
