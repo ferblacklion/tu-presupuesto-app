@@ -112,7 +112,8 @@ export const loginUserAction = () => (
       };
 
       dispatch({ type: LOGGED_IN_SUCCESS, payload: { userData } });
-      saveStore(getState(), 'userData');
+      const state: any = getState();
+      saveStore(state.user, 'userData');
     })
     .catch(e => {
       console.log(e.message);
@@ -125,10 +126,10 @@ export const loginUserAction = () => (
  */
 export const loginFromStoreAction = () => (dispatch: Dispatch) => {
   dispatch({ type: LOGGED_IN });
-  const savedUser = getStorage('userData');
+  const userSaved = getStorage('userData');
 
-  if (Object.keys(savedUser).length) {
-    return Promise.resolve(savedUser.user.userData).then(user => {
+  if (Object.keys(userSaved).length) {
+    return Promise.resolve(userSaved.userData).then(user => {
       const userData: IUser = {
         uid: user?.uid,
         displayName: user?.displayName,

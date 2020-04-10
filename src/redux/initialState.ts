@@ -2,11 +2,11 @@ import { RootState } from './store';
 import { getStorage } from '../utils';
 import { IUserState } from './user-duck';
 
-const savedUser = getStorage('userData');
+const userSaved = getStorage('userData');
 
 const user: IUserState = {
-  loggedIn: savedUser ? true : false,
-  userData: savedUser ? savedUser.user?.userData : null,
+  loggedIn: userSaved ? true : false,
+  userData: userSaved ? userSaved.userData : null,
   fetching: false,
   error: ''
 };

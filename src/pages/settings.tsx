@@ -66,7 +66,7 @@ const SettingsPage = ({
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.success]);
+  }, [settings]);
 
   const saveUserData = () => {
     const totalAmount = Number(totalAmountElement.state.numAsString);
