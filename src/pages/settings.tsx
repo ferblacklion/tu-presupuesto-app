@@ -7,14 +7,13 @@ import {
 } from '../redux/settings-duck';
 import { RootState } from '../redux/store';
 import { IUser } from '../definition/IUser';
-import { loginFromStoreAction } from '../redux/user-duck';
 import { ISettings } from '../definition/ISettings';
 import PaymentsContainer from '../components/payments-container';
 import { getPaymentsDefaultAction, IPayments } from '../redux/payments-duck';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
+import { Link } from 'react-router-dom';
 
 export declare interface ISettingsProps {
-  loginFromStoreAction: () => Promise<void>;
   user: IUser | null;
   saveSettingsAction: (uID: string, s: ISettings) => Promise<void>;
   getSettingsAction: (uID: string) => Promise<void>;
@@ -30,7 +29,6 @@ const initialValue = {
 
 const SettingsPage = ({
   user,
-  loginFromStoreAction,
   saveSettingsAction,
   getSettingsAction,
   settings,
@@ -43,16 +41,9 @@ const SettingsPage = ({
   const [state, setState] = useState(initialValue);
 
   useEffect(() => {
-    const initFetch = () => {
-      loginFromStoreAction();
-    };
-    initFetch();
-  }, [loginFromStoreAction]);
-
-  useEffect(() => {
-    if (user) {
-      getSettingsAction(user.uid || '');
-      getPaymentsDefaultAction(user.uid || '');
+    if (user && user.uid) {
+      if (!settings.success) getSettingsAction(user.uid);
+      getPaymentsDefaultAction(user.uid);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -104,7 +95,7 @@ const SettingsPage = ({
     <div>
       <h2>Menu</h2>
 
-      <a href="/">Inicio</a>
+      <Link to="/">Inicio</Link>
 
       <h1>Configuraciones</h1>
 
@@ -158,7 +149,6 @@ function mapStateToProps(state: RootState) {
   };
 }
 const dispatchToProps = {
-  loginFromStoreAction,
   saveSettingsAction,
   getSettingsAction,
   getPaymentsDefaultAction

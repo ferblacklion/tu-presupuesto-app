@@ -10,11 +10,13 @@ export interface IUserState {
   loggedIn: boolean;
   userData: IUser | null;
   fetching: boolean;
+  error: string;
 }
 const initialState: IUserState = {
   loggedIn: false,
   userData: null,
-  fetching: false
+  fetching: false,
+  error: ''
 };
 const LOGGED_IN = 'LOGGED_IN';
 const LOGGED_OUT = 'LOGGED_OUT';

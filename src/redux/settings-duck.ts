@@ -8,8 +8,10 @@ import { Dispatch } from 'redux';
 /**
  * CONSTANTS
  */
-export declare interface ISettingsState extends ISettings {
+export declare interface ISettingsState {
   success: boolean;
+  totalAmount: number;
+  cutOffDate: number;
 }
 const initialState: ISettingsState = {
   totalAmount: 0,
@@ -69,7 +71,7 @@ export default function reducer(
     case GET_SETTINGS:
       return { ...action.payload, success: false };
     case SAVE_SETTINGS:
-      return { ...action.payload };
+      return { ...state, ...action.payload, success: true };
 
     case SETTINGS_FETCHING:
       return { ...state, success: true };

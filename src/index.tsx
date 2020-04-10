@@ -6,9 +6,12 @@ import * as serviceWorker from './serviceWorker';
 import Routes from './routes';
 import { Provider } from 'react-redux';
 import generateStore from './redux/store';
+import initialState from './redux/initialState';
+
+const store = generateStore(initialState);
 
 const WithStore = () => (
-  <Provider store={generateStore()}>
+  <Provider store={store}>
     <Routes />
   </Provider>
 );

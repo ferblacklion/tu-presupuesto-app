@@ -1,8 +1,8 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { IUser } from '../definition/IUser';
 import { RootState } from '../redux/store';
-import { loginUserAction, loginFromStoreAction } from '../redux/user-duck';
+import { loginUserAction } from '../redux/user-duck';
 import {
   IPayments,
   getPaymentsAction,
@@ -12,11 +12,11 @@ import {
 import PaymentsStatus from '../components/payments-status';
 import { getSettingsAction, ISettingsState } from '../redux/settings-duck';
 import PaymentsContainer from '../components/payments-container';
+import { Link } from 'react-router-dom';
 
 export interface IHomeProps {
   user: IUser | null;
   loginUserAction: () => Promise<void>;
-  loginFromStoreAction: () => Promise<void>;
   payments: IPayments;
   settings: ISettingsState;
   getSettingsAction: (userId: string) => Promise<void>;
@@ -27,21 +27,12 @@ export interface IHomeProps {
 function HomePage({
   user,
   loginUserAction,
-  loginFromStoreAction,
   payments,
   settings,
   getSettingsAction,
   getPaymentsAction,
   getPaymentsDefaultAction
 }: IHomeProps) {
-  const initFetch = useCallback(() => {
-    loginFromStoreAction();
-  }, [loginFromStoreAction]);
-
-  useEffect(() => {
-    initFetch();
-  }, [initFetch]);
-
   const login = () => {
     loginUserAction();
   };
@@ -60,15 +51,14 @@ function HomePage({
       getPaymentsDefaultAction(user.uid);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user?.uid]);
 
   useEffect(() => {
-    if (user && user.uid) {
-      if (settings.cutOffDate > 0)
-        getPaymentsAction(user.uid, settings.cutOffDate);
+    if (user && user.uid && settings.cutOffDate > 0) {
+      getPaymentsAction(user.uid, settings.cutOffDate);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, settings.cutOffDate]);
+  }, [user?.uid, settings.cutOffDate]);
 
   useEffect(() => {
     if (
@@ -95,9 +85,7 @@ function HomePage({
           />
           <h2>Menu:</h2>
           <p>
-            <a href="/settings" title="Configuraciones">
-              Configuraciones
-            </a>
+            <Link to="/settings">settings</Link>
           </p>
           <PaymentsContainer
             title={'Agregar gastos'}
@@ -123,7 +111,6 @@ function mapStateToProps(state: RootState) {
 
 const dispatchToProps = {
   loginUserAction,
-  loginFromStoreAction,
   getSettingsAction,
   getPaymentsAction,
   getPaymentsDefaultAction
