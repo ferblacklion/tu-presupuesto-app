@@ -85,7 +85,7 @@ function HomePage({
           />
           <h2>Menu:</h2>
           <p>
-            <Link to="/settings">settings</Link>
+            <Link to="/settings/">Settings</Link>
           </p>
           <PaymentsContainer
             title={'Agregar gastos'}

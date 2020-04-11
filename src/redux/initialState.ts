@@ -1,8 +1,8 @@
 import { RootState } from './store';
-import { getStorage } from '../utils';
+import { getUserStorage } from '../utils';
 import { IUserState } from './user-duck';
 
-const userSaved = getStorage('userData');
+const userSaved = getUserStorage('userData');
 
 const user: IUserState = {
   loggedIn: userSaved ? true : false,

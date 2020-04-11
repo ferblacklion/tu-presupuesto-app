@@ -1,13 +1,14 @@
-import { IPlainObject } from '../definition/IPlainObject';
+import { get, set, remove } from 'local-storage';
+import { IUserState } from '../redux/user-duck';
 
-export function saveStore(data: any, key: string) {
-  localStorage.setItem(key, JSON.stringify(data));
+export function saveStore(data: IUserState, key: string) {
+  set<IUserState>(key, data);
 }
 
-export function getStorage(key: string): IPlainObject {
-  const value = localStorage.getItem(key);
-  if (value) {
-    return JSON.parse(value);
-  }
-  return {};
+export function getUserStorage(key: string): IUserState {
+  return get(key);
+}
+
+export function deleteLS(key: string) {
+  remove(key);
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import {
   saveSettingsAction,
@@ -11,21 +11,18 @@ import { ISettings } from '../definition/ISettings';
 import PaymentsContainer from '../components/payments-container';
 import { getPaymentsDefaultAction, IPayments } from '../redux/payments-duck';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import initialState from '../redux/initialState';
+import logout from '../utils/logout';
 
 export declare interface ISettingsProps {
   user: IUser | null;
   saveSettingsAction: (uID: string, s: ISettings) => Promise<void>;
-  getSettingsAction: (uID: string) => Promise<void>;
+  getSettingsAction: (uID: string | undefined | null) => Promise<void>;
   getPaymentsDefaultAction: (uID: string) => Promise<void>;
   settings: ISettingsState;
   payments: IPayments;
 }
-
-const initialValue = {
-  totalAmount: 0,
-  cutOffDate: 0
-};
 
 const SettingsPage = ({
   user,
@@ -38,16 +35,17 @@ const SettingsPage = ({
   let totalAmountElement: NumberFormat;
   let inputCutOffDate: NumberFormat;
 
-  const [state, setState] = useState(initialValue);
+  const [state, setState] = useState(initialState.settings);
+
+  const initFetch = useCallback(() => {
+    getSettingsAction(user?.uid);
+
+    if (user && user.uid) getPaymentsDefaultAction(user.uid);
+  }, [user, getSettingsAction, getPaymentsDefaultAction]);
 
   useEffect(() => {
-    if (user && user.uid) {
-      if (!settings.success) getSettingsAction(user.uid);
-      getPaymentsDefaultAction(user.uid);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+    initFetch();
+  }, [user, initFetch]);
 
   useEffect(() => {
     if (inputCutOffDate) {
@@ -62,9 +60,9 @@ const SettingsPage = ({
     }
     setState({
       cutOffDate: settings.cutOffDate,
-      totalAmount: settings.totalAmount
+      totalAmount: settings.totalAmount,
+      success: true
     });
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings]);
 
@@ -72,14 +70,15 @@ const SettingsPage = ({
     const totalAmount = Number(totalAmountElement.state.numAsString);
     const cutOffDate = Number(inputCutOffDate.state.value);
 
-    if (user && user?.uid)
+    if (user && user?.uid) {
       saveSettingsAction(user.uid, {
         cutOffDate: !isNaN(cutOffDate) ? cutOffDate : 0,
         totalAmount: !isNaN(totalAmount) ? totalAmount : 0
       });
+    }
   };
 
-  const onValueChange = (values: NumberFormatValues) => {
+  const cutOffDateOnValueChange = (values: NumberFormatValues) => {
     const { value, floatValue = 0 } = values;
 
     if (inputCutOffDate !== undefined && floatValue < 31) {
@@ -91,11 +90,18 @@ const SettingsPage = ({
     }
   };
 
+  if (!user) return <Redirect to={'/'} />;
+
   return (
     <div>
       <h2>Menu</h2>
 
       <Link to="/">Inicio</Link>
+      <p>
+        <a onClick={logout} href="/logout">
+          Logout
+        </a>
+      </p>
 
       <h1>Configuraciones</h1>
 
@@ -110,7 +116,7 @@ const SettingsPage = ({
               value={state.cutOffDate}
               inputMode={'numeric'}
               decimalSeparator={false}
-              onValueChange={onValueChange}
+              onValueChange={cutOffDateOnValueChange}
             />
           </p>
           <p>

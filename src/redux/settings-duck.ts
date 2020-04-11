@@ -89,9 +89,13 @@ export default function reducer(
  * ACTIONS
  */
 
-export const getSettingsAction = (userId: string) => async (
+export const getSettingsAction = (userId: string | undefined | null) => async (
   dispatch: Dispatch
 ) => {
+  if (!userId) {
+    Promise.reject('invalid userId');
+    return;
+  }
   try {
     const responseData = await getUserSettingsService(userId);
     const settings: ISettings =

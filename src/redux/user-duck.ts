@@ -1,7 +1,7 @@
 import { IUser } from '../definition/IUser';
 import { loginWithGoogle } from '../services/firebase';
 import { Dispatch, Store } from 'redux';
-import { saveStore, getStorage } from '../utils';
+import { saveStore, getUserStorage } from '../utils';
 
 /**
  * CONSTANTS
@@ -126,7 +126,7 @@ export const loginUserAction = () => (
  */
 export const loginFromStoreAction = () => (dispatch: Dispatch) => {
   dispatch({ type: LOGGED_IN });
-  const userSaved = getStorage('userData');
+  const userSaved = getUserStorage('userData');
 
   if (Object.keys(userSaved).length) {
     return Promise.resolve(userSaved.userData).then(user => {
