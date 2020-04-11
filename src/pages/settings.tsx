@@ -1,28 +1,15 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
-import {
-  saveSettingsAction,
-  getSettingsAction,
-  ISettingsState
-} from '../redux/settings-duck';
+import { saveSettingsAction, getSettingsAction } from '../redux/settings-duck';
 import { RootState } from '../redux/store';
-import { IUser } from '../definition/IUser';
-import { ISettings } from '../definition/ISettings';
 import PaymentsContainer from '../components/payments-container';
-import { getPaymentsDefaultAction, IPayments } from '../redux/payments-duck';
+import { getPaymentsDefaultAction } from '../redux/payments-duck';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import { Link, Redirect } from 'react-router-dom';
 import initialState from '../redux/initialState';
 import logout from '../utils/logout';
-
-export declare interface ISettingsProps {
-  user: IUser | null;
-  saveSettingsAction: (uID: string, s: ISettings) => Promise<void>;
-  getSettingsAction: (uID: string | undefined | null) => Promise<void>;
-  getPaymentsDefaultAction: (uID: string) => Promise<void>;
-  settings: ISettingsState;
-  payments: IPayments;
-}
+import { ISettingsPageProps } from '../definition';
+import { ROUTES } from '../routes';
 
 const SettingsPage = ({
   user,
@@ -31,7 +18,7 @@ const SettingsPage = ({
   settings,
   getPaymentsDefaultAction,
   payments
-}: ISettingsProps) => {
+}: ISettingsPageProps) => {
   let totalAmountElement: NumberFormat;
   let inputCutOffDate: NumberFormat;
 
@@ -90,15 +77,15 @@ const SettingsPage = ({
     }
   };
 
-  if (!user) return <Redirect to={'/'} />;
+  if (!user) return <Redirect to={ROUTES.LOGIN} />;
 
   return (
     <div>
       <h2>Menu</h2>
 
-      <Link to="/">Inicio</Link>
+      <Link to={ROUTES.HOME}>Inicio</Link>
       <p>
-        <a onClick={logout} href="/logout">
+        <a onClick={logout} href={ROUTES.LOGOUT}>
           Logout
         </a>
       </p>

@@ -5,23 +5,30 @@ import SettingsPage from './pages/settings';
 import Login from './pages/login';
 import Logout from './pages/logout';
 
+export enum ROUTES {
+  LOGIN = '/',
+  HOME = '/home/',
+  LOGOUT = '/logout/',
+  SETTINGS = '/settings/'
+}
+
 export default function Routes() {
   return (
     <Router>
       <Switch>
-        <Route exact path="/">
-          <HomePage />
-        </Route>
-        <Route path="/login">
+        <Route exact path={ROUTES.LOGIN}>
           <Login />
         </Route>
-        <Route path="/logout">
-          <Logout />
+        <Route path={ROUTES.HOME}>
+          <HomePage />
         </Route>
-        <Route path="/settings">
+        <Route path={ROUTES.SETTINGS}>
           <SettingsPage />
         </Route>
-        <Route component={() => <h1>404.. This page is not found!</h1>} />
+        <Route path={ROUTES.LOGOUT}>
+          <Logout />
+        </Route>
+        <Route component={() => <h1>404... This page is not found!</h1>} />
       </Switch>
     </Router>
   );

@@ -1,42 +1,25 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { IUser } from '../definition/IUser';
 import { RootState } from '../redux/store';
-import { loginUserAction } from '../redux/user-duck';
 import {
-  IPayments,
   getPaymentsAction,
   getPaymentsDefaultAction
 } from '../redux/payments-duck';
-
 import PaymentsStatus from '../components/payments-status';
-import { getSettingsAction, ISettingsState } from '../redux/settings-duck';
+import { getSettingsAction } from '../redux/settings-duck';
 import PaymentsContainer from '../components/payments-container';
-import { Link } from 'react-router-dom';
-
-export interface IHomeProps {
-  user: IUser | null;
-  loginUserAction: () => Promise<void>;
-  payments: IPayments;
-  settings: ISettingsState;
-  getSettingsAction: (userId: string) => Promise<void>;
-  getPaymentsAction: (userId: string, cutOffDate: number) => Promise<void>;
-  getPaymentsDefaultAction: (userId: string) => Promise<void>;
-}
+import { Link, Redirect } from 'react-router-dom';
+import { IHomePageProps } from '../definition';
+import { ROUTES } from '../routes';
 
 function HomePage({
   user,
-  loginUserAction,
   payments,
   settings,
   getSettingsAction,
   getPaymentsAction,
   getPaymentsDefaultAction
-}: IHomeProps) {
-  const login = () => {
-    loginUserAction();
-  };
-
+}: IHomePageProps) {
   useEffect(() => {
     if (user && user.uid) {
       if (!settings.success) {
@@ -72,31 +55,28 @@ function HomePage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.success]);
 
+  if (!user) return <Redirect to={'/'} />;
+
   return (
     <div>
-      {user?.uid && (
-        <div>
-          <h1>Hello {user?.displayName}</h1>
-          <img
-            width="60"
-            height="65"
-            src={user?.photoURL || ''}
-            alt={user?.displayName || ''}
-          />
-          <h2>Menu:</h2>
-          <p>
-            <Link to="/settings/">Settings</Link>
-          </p>
-          <PaymentsContainer
-            title={'Agregar gastos'}
-            user={user}
-            payments={payments}
-            settings={settings}
-          />
-          <PaymentsStatus settings={settings} payments={payments} />
-        </div>
-      )}
-      {!user?.uid && <button onClick={login}>LOGIN</button>}
+      <h1>Hello {user.displayName}</h1>
+      <img
+        width="60"
+        height="65"
+        src={user.photoURL || ''}
+        alt={user.displayName || ''}
+      />
+      <h2>Menu:</h2>
+      <p>
+        <Link to={ROUTES.SETTINGS}>Settings</Link>
+      </p>
+      <PaymentsContainer
+        title={'Agregar gastos'}
+        user={user}
+        payments={payments}
+        settings={settings}
+      />
+      <PaymentsStatus settings={settings} payments={payments} />
     </div>
   );
 }
@@ -110,7 +90,6 @@ function mapStateToProps(state: RootState) {
 }
 
 const dispatchToProps = {
-  loginUserAction,
   getSettingsAction,
   getPaymentsAction,
   getPaymentsDefaultAction
