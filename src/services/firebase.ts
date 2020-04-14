@@ -2,7 +2,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import { ISettings } from '../definition/ISettings';
-import { IPayments, IPayment } from '../redux/payments-duck';
+import { IPayments, IPayment } from '../definition/IPayment';
 import moment from 'moment';
 declare interface IFirebaseConfig {
   apiKey: string;

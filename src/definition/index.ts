@@ -1,7 +1,7 @@
 import { IUser } from './IUser';
 import { ISettings } from './ISettings';
-import { ISettingsState } from '../redux/settings-duck';
-import { IPayments } from '../redux/payments-duck';
+import { ISettingsState } from './ISettingsState';
+import { IPayments } from './IPayment';
 
 export declare interface IBasePageProps {
   user: IUser | null;

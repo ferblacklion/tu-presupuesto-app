@@ -11,6 +11,7 @@ import PaymentsContainer from '../components/payments-container';
 import { Link, Redirect } from 'react-router-dom';
 import { IHomePageProps } from '../definition';
 import { ROUTES } from '../routes';
+import UserInfo from '../components/user-info';
 
 function HomePage({
   user,
@@ -59,13 +60,7 @@ function HomePage({
 
   return (
     <div>
-      <h1>Hello {user.displayName}</h1>
-      <img
-        width="60"
-        height="65"
-        src={user.photoURL || ''}
-        alt={user.displayName || ''}
-      />
+      <UserInfo user={user} />
       <h2>Menu:</h2>
       <p>
         <Link to={ROUTES.SETTINGS}>Settings</Link>

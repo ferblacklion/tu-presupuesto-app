@@ -1,4 +1,4 @@
-import { IPayment } from '../redux/payments-duck';
+import { IPayment } from '../definition/IPayment';
 
 export function sortFunByIsDefault(a: IPayment, b: IPayment) {
   const x = a.isDefault;

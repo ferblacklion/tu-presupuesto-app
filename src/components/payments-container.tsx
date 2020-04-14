@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import NumberFormat from 'react-number-format';
-import { IPayment, IPayments } from '../redux/payments-duck';
+import { IPayment, IPayments } from '../definition/IPayment';
 import { IUser } from '../definition/IUser';
 import {
   getPaymentsAction,

@@ -2,22 +2,8 @@ import { IUser } from '../definition/IUser';
 import { loginWithGoogle } from '../services/firebase';
 import { Dispatch, Store } from 'redux';
 import { saveStore, getUserStorage } from '../utils';
+import { initialUserState } from './initialState';
 
-/**
- * CONSTANTS
- */
-export interface IUserState {
-  loggedIn: boolean;
-  userData: IUser | null;
-  fetching: boolean;
-  error: string;
-}
-const initialState: IUserState = {
-  loggedIn: false,
-  userData: null,
-  fetching: false,
-  error: ''
-};
 const LOGGED_IN = 'LOGGED_IN';
 const LOGGED_OUT = 'LOGGED_OUT';
 const LOGGED_IN_SUCCESS = 'LOGGED_IN_SUCCESS';
@@ -65,7 +51,7 @@ type LoginActionTypes =
  * @param action
  */
 export default function reducer(
-  state = initialState,
+  state = initialUserState,
   action: LoginActionTypes
 ) {
   switch (action.type) {
@@ -147,12 +133,3 @@ export const loginFromStoreAction = () => (dispatch: Dispatch) => {
     });
   });
 };
-
-/**
- * THUNKS
- */
-// side effects, only as applicable
-// e.g. thunks, epics, etc
-export function getUser() {
-  return;
-}

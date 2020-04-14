@@ -1,6 +1,6 @@
 import React from 'react';
 import { ISettings } from '../definition/ISettings';
-import { IPayments, IPayment } from '../redux/payments-duck';
+import { IPayments, IPayment } from '../definition/IPayment';
 import formatCurrency from '../utils/format-currency';
 
 export declare interface IPaymentsStatus {

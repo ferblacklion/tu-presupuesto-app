@@ -5,29 +5,16 @@ import {
   deletePaymentService,
   getUserPaymentDefaultService
 } from '../services/firebase';
-import { firestore } from 'firebase';
+import { initialPaymentState } from './initialState';
+import { IPayment, IPayments } from '../definition/IPayment';
 
-export const initialState: IPayments = {
-  payments: []
-};
 /**
  * CONSTANTS
  */
 export const SAVE_PAYMENT = 'SAVE_PAYMENT';
 export const GET_PAYMENT = 'GET_PAYMENT';
-
 export const GET_PAYMENT_DEFAULT = 'GET_PAYMENT_DEFAULT';
 export const DELETE_PAYMENT = 'DELETE_PAYMENT';
-export declare interface IPayment {
-  id?: string;
-  name: string;
-  cost: number;
-  isDefault: boolean;
-  datetime: firestore.Timestamp;
-}
-export declare interface IPayments {
-  payments: IPayment[];
-}
 
 export interface ISavePaymentAction {
   type: typeof SAVE_PAYMENT;
@@ -61,7 +48,7 @@ type paymentsActionsTypes =
  * @param action
  */
 export default function reducer(
-  state = initialState,
+  state = initialPaymentState,
   action: paymentsActionsTypes
 ) {
   switch (action.type) {

@@ -4,52 +4,35 @@ import {
   saveUserSettingsService
 } from '../services/firebase';
 import { Dispatch } from 'redux';
+import { initialSettingsState } from './initialState';
 
 /**
  * CONSTANTS
  */
-export declare interface ISettingsState {
-  success: boolean;
-  totalAmount: number;
-  cutOffDate: number;
-}
-const initialState: ISettingsState = {
-  totalAmount: 0,
-  cutOffDate: 0,
-  success: false
-};
-
 export const GET_SETTINGS = 'GET_SETTINGS';
-export type GET_SETTINGS_TYPE = typeof GET_SETTINGS;
-
 export const SAVE_SETTINGS = 'SAVE_SETTINGS';
-export type SAVE_SETTINGS_TYPE = typeof SAVE_SETTINGS;
-
 export const SETTINGS_FETCHING = 'SETTINGS_FETCHING';
-export type SETTINGS_FETCHING_TYPE = typeof SETTINGS_FETCHING;
-
 export const FETCHING_ERROR = 'FETCHING_ERROR';
-export type FETCHING_ERROR_TYPE = typeof FETCHING_ERROR;
 
 //define action interfaces
 export interface IGetSettings {
-  type: GET_SETTINGS_TYPE;
+  type: typeof GET_SETTINGS;
   payload: ISettings;
 }
 
 export interface ISaveSettings {
-  type: SAVE_SETTINGS_TYPE;
+  type: typeof SAVE_SETTINGS;
   payload: ISettings;
   fetching: boolean;
 }
 
 export interface ISettingsFetching {
-  type: SETTINGS_FETCHING_TYPE;
+  type: typeof SETTINGS_FETCHING;
   fetching: boolean;
 }
 
 export interface ISettingsFetchingError {
-  type: FETCHING_ERROR_TYPE;
+  type: typeof FETCHING_ERROR;
   fetching: boolean;
 }
 export type SettingsActionsTypes =
@@ -64,7 +47,7 @@ export type SettingsActionsTypes =
  * @param action
  */
 export default function reducer(
-  state = initialState,
+  state = initialSettingsState,
   action: SettingsActionsTypes
 ) {
   switch (action.type) {
@@ -87,6 +70,7 @@ export default function reducer(
 /**
  *
  * ACTIONS
+ *
  */
 
 export const getSettingsAction = (userId: string | undefined | null) => async (

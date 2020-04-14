@@ -1,5 +1,5 @@
 import { get, set, remove } from 'local-storage';
-import { IUserState } from '../redux/user-duck';
+import { IUserState } from '../definition/IUserState';
 
 export function saveStore(data: IUserState, key: string) {
   set<IUserState>(key, data);

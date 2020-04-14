@@ -1,4 +1,4 @@
-import { IPayment } from '../redux/payments-duck';
+import { IPayment } from '../definition/IPayment';
 
 export function sortFunction(a: IPayment, b: IPayment) {
   var dateA = a.datetime.seconds;

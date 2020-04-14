@@ -51,7 +51,7 @@ export default function SettingsForm({
   };
 
   return (
-    <form>
+    <form id={'save-settings-form'}>
       <p>
         <label htmlFor="">Fecha corte:</label>
         <NumberFormat
@@ -78,7 +78,7 @@ export default function SettingsForm({
           allowNegative={false}
         />
       </p>
-      <button type="submit" onClick={saveSettings}>
+      <button id={'save-settings'} type="submit" onClick={saveSettings}>
         Guardar
       </button>
     </form>
