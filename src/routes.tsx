@@ -11,6 +11,7 @@ export enum ROUTES {
   LOGOUT = '/logout/',
   SETTINGS = '/settings/'
 }
+// TODO add auth routes
 
 export default function Routes() {
   return (

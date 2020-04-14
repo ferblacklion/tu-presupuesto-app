@@ -25,3 +25,8 @@ export declare interface ILogin {
   user: IUser | null;
   loginUserAction: () => Promise<void>;
 }
+
+export declare interface ISettingsFormProps {
+  onSubmit: (totalAmount: number, cutOffDate: number) => void;
+  settings: ISettingsState;
+}
