@@ -1,7 +1,7 @@
 import { IUser } from './IUser';
 import { ISettings } from './ISettings';
 import { ISettingsState } from './ISettingsState';
-import { IPayments } from './IPayment';
+import { IPayments, IPayment } from './IPayment';
 
 export declare interface IBasePageProps {
   user: IUser | null;
@@ -12,13 +12,18 @@ export declare interface IBasePageProps {
 export declare interface ISettingsPageProps extends IBasePageProps {
   saveSettingsAction: (uID: string, s: ISettings) => Promise<void>;
   getSettingsAction: (uID: string | undefined | null) => Promise<void>;
-  getPaymentsDefaultAction: (uID: string) => Promise<void>;
+  deletePaymentsAction: (paymentId: string, userId: string) => Promise<void>;
+  savePaymentAction: (userId: string, payment: IPayment) => Promise<void>;
+  getPaymentsAction: (userId: string, cutOffDate: number) => Promise<void>;
+  getPaymentsDefaultAction: (userId: string) => Promise<void>;
 }
 
 export declare interface IHomePageProps extends IBasePageProps {
   getPaymentsAction: (userId: string, cutOffDate: number) => Promise<void>;
   getSettingsAction: (uID: string | undefined | null) => Promise<void>;
   getPaymentsDefaultAction: (uID: string) => Promise<void>;
+  deletePaymentsAction: (paymentId: string, userId: string) => Promise<void>;
+  savePaymentAction: (userId: string, payment: IPayment) => Promise<void>;
 }
 
 export declare interface ILogin {

@@ -3,20 +3,28 @@ import { connect } from 'react-redux';
 import { saveSettingsAction, getSettingsAction } from '../redux/settings-duck';
 import { RootState } from '../redux/store';
 import PaymentsContainer from '../components/payments-container';
-import { getPaymentsDefaultAction } from '../redux/payments-duck';
+import {
+  getPaymentsDefaultAction,
+  savePaymentAction,
+  getPaymentsAction,
+  deletePaymentsAction
+} from '../redux/payments-duck';
 import { Link, Redirect } from 'react-router-dom';
 import logout from '../utils/logout';
 import { ISettingsPageProps } from '../definition';
 import { ROUTES } from '../routes';
 import SettingsForm from '../components/settings-form';
 
-const SettingsPage = ({
+export const SettingsPage = ({
   user,
   saveSettingsAction,
   getSettingsAction,
   settings,
   getPaymentsDefaultAction,
-  payments
+  payments,
+  deletePaymentsAction,
+  savePaymentAction,
+  getPaymentsAction
 }: ISettingsPageProps) => {
   const initFetch = useCallback(() => {
     getSettingsAction(user?.uid);
@@ -61,6 +69,10 @@ const SettingsPage = ({
         payments={payments}
         isDefaultData={true}
         settings={settings}
+        deletePaymentsAction={deletePaymentsAction}
+        savePaymentAction={savePaymentAction}
+        getPaymentsAction={getPaymentsAction}
+        getPaymentsDefaultAction={getPaymentsDefaultAction}
       />
     </div>
   );
@@ -76,7 +88,10 @@ function mapStateToProps(state: RootState) {
 const dispatchToProps = {
   saveSettingsAction,
   getSettingsAction,
-  getPaymentsDefaultAction
+  getPaymentsDefaultAction,
+  savePaymentAction,
+  getPaymentsAction,
+  deletePaymentsAction
 };
 
 export default connect(mapStateToProps, dispatchToProps)(SettingsPage);

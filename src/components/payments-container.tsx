@@ -2,13 +2,7 @@ import React, { useState } from 'react';
 import NumberFormat from 'react-number-format';
 import { IPayment, IPayments } from '../definition/IPayment';
 import { IUser } from '../definition/IUser';
-import {
-  getPaymentsAction,
-  deletePaymentsAction,
-  savePaymentAction,
-  getPaymentsDefaultAction
-} from '../redux/payments-duck';
-import { connect } from 'react-redux';
+
 import formatCurrency from '../utils/format-currency';
 
 import 'firebase/firestore';
@@ -21,8 +15,8 @@ export declare interface IPaymentsContainer {
   user: IUser | null;
   payments: IPayments;
   settings: ISettings;
-  deletePaymentsAction: (paymentId: string, userId: string) => Promise<void>;
   isDefaultData?: boolean;
+  deletePaymentsAction: (paymentId: string, userId: string) => Promise<void>;
   savePaymentAction: (userId: string, payment: IPayment) => Promise<void>;
   getPaymentsAction: (userId: string, cutOffDate: number) => Promise<void>;
   getPaymentsDefaultAction: (userId: string) => Promise<void>;
@@ -37,11 +31,11 @@ function PaymentsContainer({
   title,
   user,
   payments,
-  deletePaymentsAction,
   isDefaultData = false,
+  settings,
   savePaymentAction,
   getPaymentsAction,
-  settings,
+  deletePaymentsAction,
   getPaymentsDefaultAction
 }: IPaymentsContainer) {
   const [formData, setFormData] = useState<IFormPaymentState>({
@@ -152,11 +146,4 @@ function PaymentsContainer({
   );
 }
 
-const dispatchToProps = {
-  getPaymentsAction,
-  deletePaymentsAction,
-  savePaymentAction,
-  getPaymentsDefaultAction
-};
-
-export default connect(null, dispatchToProps)(PaymentsContainer);
+export default PaymentsContainer;

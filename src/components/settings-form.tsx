@@ -60,7 +60,7 @@ export default function SettingsForm({
           minLength={2}
           value={state.cutOffDate}
           inputMode={'numeric'}
-          decimalSeparator={false}
+          decimalSeparator={'false'}
           onValueChange={cutOffDateOnValueChange}
         />
       </p>

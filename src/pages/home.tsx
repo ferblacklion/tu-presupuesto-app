@@ -3,7 +3,9 @@ import { connect } from 'react-redux';
 import { RootState } from '../redux/store';
 import {
   getPaymentsAction,
-  getPaymentsDefaultAction
+  getPaymentsDefaultAction,
+  deletePaymentsAction,
+  savePaymentAction
 } from '../redux/payments-duck';
 import PaymentsStatus from '../components/payments-status';
 import { getSettingsAction } from '../redux/settings-duck';
@@ -19,7 +21,9 @@ function HomePage({
   settings,
   getSettingsAction,
   getPaymentsAction,
-  getPaymentsDefaultAction
+  getPaymentsDefaultAction,
+  deletePaymentsAction,
+  savePaymentAction
 }: IHomePageProps) {
   useEffect(() => {
     if (user && user.uid) {
@@ -70,6 +74,10 @@ function HomePage({
         user={user}
         payments={payments}
         settings={settings}
+        deletePaymentsAction={deletePaymentsAction}
+        savePaymentAction={savePaymentAction}
+        getPaymentsAction={getPaymentsAction}
+        getPaymentsDefaultAction={getPaymentsDefaultAction}
       />
       <PaymentsStatus settings={settings} payments={payments} />
     </div>
@@ -87,7 +95,9 @@ function mapStateToProps(state: RootState) {
 const dispatchToProps = {
   getSettingsAction,
   getPaymentsAction,
-  getPaymentsDefaultAction
+  getPaymentsDefaultAction,
+  deletePaymentsAction,
+  savePaymentAction
 };
 
 export default connect(mapStateToProps, dispatchToProps)(HomePage);
