@@ -5,7 +5,8 @@ import { ISettingsFormProps } from '../definition';
 
 export default function SettingsForm({
   onSubmit,
-  settings
+  settings,
+  saving
 }: ISettingsFormProps) {
   let totalAmountElement: NumberFormat;
   let inputCutOffDate: NumberFormat;
@@ -79,7 +80,7 @@ export default function SettingsForm({
         />
       </p>
       <button id={'save-settings'} type="submit" onClick={saveSettings}>
-        Guardar
+        {saving === false ? 'Guardar' : 'Guardando...'}
       </button>
     </form>
   );

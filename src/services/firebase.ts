@@ -83,9 +83,11 @@ export function saveUserSettingsService(userId: string, settings: ISettings) {
     .set(settings)
     .then(() => {
       console.log('saved settings');
+      return true;
     })
     .catch(() => {
       console.log('was an error');
+      return false;
     });
 }
 

@@ -4,18 +4,30 @@ import { IUser } from '../definition/IUser';
 import { ISettings } from '../definition/ISettings';
 import { IPayments, IPayment } from '../definition/IPayment';
 import { mount } from 'enzyme';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { ISettingsPageProps } from '../definition';
 import { ISettingsState } from '../definition/ISettingsState';
+import thunk from 'redux-thunk';
+import fetchMock from 'fetch-mock';
+import configureMockStore from 'redux-mock-store';
+import {
+  SAVE_SETTINGS,
+  SETTINGS_FETCHING,
+  anotherThunkAction
+} from '../redux/settings-duck';
+
+// test an async action
+const middleware = [thunk];
+const mockStore = configureMockStore(middleware);
+const user: IUser = {
+  uid: 'vrw44t5KzvUjRO0yhoGwXum93Px1',
+  displayName: 'Moisés Cermeño',
+  photoURL:
+    'https://lh3.googleusercontent.com/a-/AAuE7mD1yc_T93RSzAw4qfRl5Bvz9W2pjMJNSowQrZZEdA',
+  email: 'mo.frc08@gmail.com'
+};
 
 function render(args?: any) {
-  const user: IUser = {
-    uid: 'vrw44t5KzvUjRO0yhoGwXum93Px1',
-    displayName: 'Moisés Cermeño',
-    photoURL:
-      'https://lh3.googleusercontent.com/a-/AAuE7mD1yc_T93RSzAw4qfRl5Bvz9W2pjMJNSowQrZZEdA',
-    email: 'mo.frc08@gmail.com'
-  };
   const settings: ISettingsState = {
     totalAmount: 9000,
     cutOffDate: 25,
@@ -27,7 +39,11 @@ function render(args?: any) {
     user,
     settings,
     payments,
-    saveSettingsAction: (uID: string, s: ISettings) => Promise.resolve(),
+    saveSettingsAction: (uID: string, s: ISettings) =>
+      Promise.resolve(
+        //dispatch({ type: SAVE_SETTINGS, payload: settings })
+        console.log('saved')
+      ),
     getSettingsAction: (uID: string | undefined | null) => Promise.resolve(),
     deletePaymentsAction: (paymentId: string, userId: string) =>
       Promise.resolve(),
@@ -39,16 +55,56 @@ function render(args?: any) {
 
   const props = { ...defaultProps, ...args };
   return mount(
-    <Router>
+    <MemoryRouter>
       <SettingsPage {...props} />
-    </Router>
+    </MemoryRouter>
   );
 }
 
-describe('SettingsPage - default props render', () => {
+describe('SettingsPage Component', () => {
+  afterEach(() => {
+    fetchMock.restore();
+  });
+
   it('render total-amount default value', () => {
     const wrapper = render({ history: {}, match: {} });
     const totalAmount = wrapper.find('#total-amount').first();
     expect(totalAmount.props().value).toBe(9000);
+  });
+
+  it('render form settings', () => {
+    const wrapper = render({ history: {}, match: {} });
+    const forms = wrapper.find('#save-settings-form');
+
+    expect(forms.length).toBe(1);
+  });
+
+  it('dispatch SAVE_SETTINGS action', () => {
+    const settings: ISettingsState = {
+      totalAmount: 9002,
+      cutOffDate: 26,
+      success: true
+    };
+
+    fetchMock.mock('*', {
+      body: settings,
+      headers: { 'content-type': 'aplication/json' }
+    });
+
+    const expectedActions = [
+      {
+        type: SAVE_SETTINGS,
+        payload: {
+          totalAmount: 9002,
+          cutOffDate: 26,
+          success: true
+        }
+      }
+    ];
+    const store = mockStore({ settings: [] });
+
+    store.dispatch({ type: SAVE_SETTINGS, payload: settings });
+
+    expect(store.getActions()).toEqual(expectedActions);
   });
 });

@@ -3,8 +3,10 @@ import {
   getUserSettingsService,
   saveUserSettingsService
 } from '../services/firebase';
-import { Dispatch } from 'redux';
+import { Dispatch, Action } from 'redux';
 import { initialSettingsState } from './initialState';
+import { ThunkAction } from 'redux-thunk';
+import { RootState } from './store';
 
 /**
  * CONSTANTS
@@ -95,21 +97,22 @@ export const getSettingsAction = (userId: string | undefined | null) => async (
   }
 };
 
+type SaveSettingsThunkResult<R> = ThunkAction<R, RootState, undefined, Action>;
+
 export const saveSettingsAction = (
-  userId: string,
+  userId: string | null | undefined,
   settings: ISettings
-) => async (dispatch: Dispatch) => {
-  try {
-    dispatch({ type: SAVE_SETTINGS, payload: settings });
-    saveUserSettingsService(userId, settings)
-      .then(function() {
-        dispatch({ type: SETTINGS_FETCHING, fetching: true });
-      })
-      .catch(function(error) {
-        console.error('Error writing document: ', error);
-        dispatch({ type: FETCHING_ERROR, fetching: false });
-      });
-  } catch (error) {
-    console.log(error);
-  }
+): SaveSettingsThunkResult<Promise<boolean>> => dispatch => {
+  if (!userId) return Promise.reject(false);
+  dispatch({ type: SAVE_SETTINGS, payload: settings });
+  return saveUserSettingsService(userId, settings)
+    .then(function(r) {
+      dispatch({ type: SETTINGS_FETCHING, fetching: true });
+      return r;
+    })
+    .catch(function(error) {
+      console.error('Error writing document: ', error);
+      dispatch({ type: FETCHING_ERROR, fetching: false });
+      return false;
+    });
 };

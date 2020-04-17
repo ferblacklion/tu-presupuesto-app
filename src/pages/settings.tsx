@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { connect } from 'react-redux';
 import { saveSettingsAction, getSettingsAction } from '../redux/settings-duck';
 import { RootState } from '../redux/store';
@@ -36,11 +36,18 @@ export const SettingsPage = ({
     initFetch();
   }, [user, initFetch]);
 
+  const [savindSettigs, setSavindSettigs] = useState(false);
+
   const saveUserSettings = (totalAmount: number, cutOffDate: number) => {
+    setSavindSettigs(true);
     if (user && user?.uid) {
       saveSettingsAction(user.uid, {
         cutOffDate: !isNaN(cutOffDate) ? cutOffDate : 0,
         totalAmount: !isNaN(totalAmount) ? totalAmount : 0
+      }).then(() => {
+        setTimeout(() => {
+          setSavindSettigs(false);
+        }, 800);
       });
     }
   };
@@ -61,7 +68,11 @@ export const SettingsPage = ({
       <h1>Configuraciones</h1>
 
       {settings.success && (
-        <SettingsForm settings={settings} onSubmit={saveUserSettings} />
+        <SettingsForm
+          settings={settings}
+          onSubmit={saveUserSettings}
+          saving={savindSettigs}
+        />
       )}
       <PaymentsContainer
         title={'Agregar gastos predeterminados:'}

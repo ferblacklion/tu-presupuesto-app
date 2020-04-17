@@ -10,7 +10,10 @@ export declare interface IBasePageProps {
 }
 
 export declare interface ISettingsPageProps extends IBasePageProps {
-  saveSettingsAction: (uID: string, s: ISettings) => Promise<void>;
+  saveSettingsAction: (
+    uID: string | undefined | null,
+    s: ISettings
+  ) => Promise<boolean>;
   getSettingsAction: (uID: string | undefined | null) => Promise<void>;
   deletePaymentsAction: (paymentId: string, userId: string) => Promise<void>;
   savePaymentAction: (userId: string, payment: IPayment) => Promise<void>;
@@ -34,4 +37,5 @@ export declare interface ILogin {
 export declare interface ISettingsFormProps {
   onSubmit: (totalAmount: number, cutOffDate: number) => void;
   settings: ISettingsState;
+  saving: boolean;
 }
