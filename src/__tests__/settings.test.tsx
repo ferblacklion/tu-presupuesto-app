@@ -10,11 +10,7 @@ import { ISettingsState } from '../definition/ISettingsState';
 import thunk from 'redux-thunk';
 import fetchMock from 'fetch-mock';
 import configureMockStore from 'redux-mock-store';
-import {
-  SAVE_SETTINGS,
-  SETTINGS_FETCHING,
-  anotherThunkAction
-} from '../redux/settings-duck';
+import { SAVE_SETTINGS } from '../redux/settings-duck';
 
 // test an async action
 const middleware = [thunk];
@@ -39,11 +35,8 @@ function render(args?: any) {
     user,
     settings,
     payments,
-    saveSettingsAction: (uID: string, s: ISettings) =>
-      Promise.resolve(
-        //dispatch({ type: SAVE_SETTINGS, payload: settings })
-        console.log('saved')
-      ),
+    saveSettingsAction: (ID: string | undefined | null, s: ISettings) =>
+      Promise.resolve(true),
     getSettingsAction: (uID: string | undefined | null) => Promise.resolve(),
     deletePaymentsAction: (paymentId: string, userId: string) =>
       Promise.resolve(),
@@ -72,11 +65,22 @@ describe('SettingsPage Component', () => {
     expect(totalAmount.props().value).toBe(9000);
   });
 
-  it('render form settings', () => {
+  it('render settings form', () => {
     const wrapper = render({ history: {}, match: {} });
     const forms = wrapper.find('#save-settings-form');
 
     expect(forms.length).toBe(1);
+  });
+
+  it('render saving True state settings form ', () => {
+    const wrap = render({ history: {}, match: {} });
+
+    wrap.setState({ savingSettings: true }, () => {
+      expect(wrap.state('savingSettings')).toEqual(true);
+      //const input = wrap.find('#save-settings');
+      //expect(input.text()).toEqual('Guardando...');
+      //console.log(wrap.debug());
+    });
   });
 
   it('dispatch SAVE_SETTINGS action', () => {

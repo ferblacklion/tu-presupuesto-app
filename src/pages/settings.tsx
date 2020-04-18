@@ -36,17 +36,17 @@ export const SettingsPage = ({
     initFetch();
   }, [user, initFetch]);
 
-  const [savindSettigs, setSavindSettigs] = useState(false);
+  const [savingSettings, setSavingSettings] = useState(false);
 
   const saveUserSettings = (totalAmount: number, cutOffDate: number) => {
-    setSavindSettigs(true);
+    setSavingSettings(true);
     if (user && user?.uid) {
       saveSettingsAction(user.uid, {
         cutOffDate: !isNaN(cutOffDate) ? cutOffDate : 0,
         totalAmount: !isNaN(totalAmount) ? totalAmount : 0
       }).then(() => {
         setTimeout(() => {
-          setSavindSettigs(false);
+          setSavingSettings(false);
         }, 800);
       });
     }
@@ -71,7 +71,7 @@ export const SettingsPage = ({
         <SettingsForm
           settings={settings}
           onSubmit={saveUserSettings}
-          saving={savindSettigs}
+          saving={savingSettings}
         />
       )}
       <PaymentsContainer
