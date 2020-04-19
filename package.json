@@ -26,6 +26,7 @@
     "redux": "^4.0.5",
     "redux-devtools": "^3.5.0",
     "redux-thunk": "^2.3.0",
+    "source-map-explorer": "^2.4.2",
     "typescript": "~3.7.2"
   },
   "scripts": {
@@ -33,13 +34,12 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy:assets": "yarn test --watchAll=false && yarn build && firebase deploy --only hosting"
+    "deploy:assets": "yarn test --watchAll=false && yarn build && firebase deploy --only hosting",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "lint-staged": {
-    "*.{js,jsx}": [
-      "pretty-quick --staged",
-      "eslint src/ --fix",
-      "git add"
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
     ]
   },
   "eslintConfig": {

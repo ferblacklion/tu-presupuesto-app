@@ -1,12 +1,7 @@
 import React from 'react';
-import { ISettings } from '../definition/ISettings';
-import { IPayments, IPayment } from '../definition/IPayment';
+import { IPayment } from '../definition/IPayment';
 import formatCurrency from '../utils/format-currency';
-
-export declare interface IPaymentsStatus {
-  settings: ISettings;
-  payments: IPayments;
-}
+import { IPaymentsStatus } from '../definition';
 
 function PaymentsStatus({ settings, payments }: IPaymentsStatus) {
   const initialCost = 0;
@@ -23,10 +18,23 @@ function PaymentsStatus({ settings, payments }: IPaymentsStatus) {
   return (
     <div>
       <h2>Estados</h2>
-      <div>Presupuesto total: {formatCurrency(settings.totalAmount)}</div>
-      <div>Saldo restante: {formatCurrency(settings.totalAmount - total)}</div>
+      <div>
+        Presupuesto total:{' '}
+        <span id={'total-amount'}>
+          {' '}
+          {formatCurrency(settings.totalAmount)}{' '}
+        </span>
+      </div>
+      <div>
+        Saldo restante:{' '}
+        <span id={'total-rest'}>
+          {formatCurrency(settings.totalAmount - total)}
+        </span>
+      </div>
       <div>---------------------------------------</div>
-      <div>Gastos: {formatCurrency(total)}</div>
+      <div>
+        Gastos: <span id={'total-payments'}>{formatCurrency(total)}</span>
+      </div>
     </div>
   );
 }

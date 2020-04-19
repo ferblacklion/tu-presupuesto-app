@@ -39,3 +39,8 @@ export declare interface ISettingsFormProps {
   settings: ISettingsState;
   saving: boolean;
 }
+
+export declare interface IPaymentsStatus {
+  settings: ISettings;
+  payments: IPayments;
+}

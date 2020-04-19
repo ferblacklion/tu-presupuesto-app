@@ -15,7 +15,7 @@ import { IHomePageProps } from '../definition';
 import { ROUTES } from '../routes';
 import UserInfo from '../components/user-info';
 
-function HomePage({
+export function HomePage({
   user,
   payments,
   settings,

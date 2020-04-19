@@ -130,7 +130,7 @@ function PaymentsContainer({
       <div>
         <div>
           <h2>LISTA DE GASTOS</h2>
-          <ul>
+          <ul id={'payments-list'}>
             {payments.payments.map((p, i: number) => (
               <li key={p.id || i}>
                 {i + 1}). {p.name} ===>{'   '} {formatCurrency(p.cost)}{' '}

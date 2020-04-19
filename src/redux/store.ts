@@ -22,12 +22,13 @@ export type RootState = ReturnType<typeof rootReducer>;
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export default function generateStore(initialState: RootState) {
-  return createStore(
-    rootReducer,
-    initialState,
-    composeEnhancers(applyMiddleware(reduxImmutableStateInvariant(), thunk))
-  );
-}
-export function generateStoreProd() {
-  return createStore(rootReducer, applyMiddleware(thunk));
+  if (process.env.NODE_ENV === 'development') {
+    return createStore(
+      rootReducer,
+      initialState,
+      composeEnhancers(applyMiddleware(reduxImmutableStateInvariant(), thunk))
+    );
+  } else {
+    return createStore(rootReducer, initialState, applyMiddleware(thunk));
+  }
 }
