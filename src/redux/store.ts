@@ -2,7 +2,6 @@ import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import userReducer from './user-duck';
 import settingsReducer from './settings-duck';
-
 import paymentsReducer from './payments-duck';
 import reduxImmutableStateInvariant from 'redux-immutable-state-invariant';
 
@@ -19,10 +18,10 @@ const rootReducer = combineReducers({
 });
 export type RootState = ReturnType<typeof rootReducer>;
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
 export default function generateStore(initialState: RootState) {
   if (process.env.NODE_ENV === 'development') {
+    const composeEnhancers =
+      window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
     return createStore(
       rootReducer,
       initialState,

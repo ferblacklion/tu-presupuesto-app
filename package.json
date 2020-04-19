@@ -34,7 +34,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy:assets": "yarn test --watchAll=false && yarn build && firebase deploy --only hosting",
+    "deploy:assets": "yarn test --watchAll=false && yarn build && firebase deploy --only hosting && yarn analyze",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "lint-staged": {
