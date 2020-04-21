@@ -44,6 +44,7 @@ function PaymentsContainer({
   });
 
   let costInput: any = null;
+  const [saving, setSaving] = useState(false);
 
   const savePayments = () => {
     if (!user) return;
@@ -64,16 +65,23 @@ function PaymentsContainer({
     }
 
     if (singlePayment.name.trim() && singlePayment.cost > 0) {
+      setSaving(true);
       if (user.uid)
-        savePaymentAction(user.uid, singlePayment).then(() => {
-          setFormData({ name: '', cost: '' });
+        savePaymentAction(user.uid, singlePayment)
+          .then(() => {
+            setFormData({ name: '', cost: '' });
 
-          if (user.uid) {
-            getPaymentsDefaultAction(user.uid);
-            if (!isDefaultData)
-              getPaymentsAction(user.uid, settings.cutOffDate);
-          }
-        });
+            if (user.uid) {
+              getPaymentsDefaultAction(user.uid);
+              if (!isDefaultData)
+                getPaymentsAction(user.uid, settings.cutOffDate);
+            }
+          })
+          .then(() =>
+            setTimeout(() => {
+              setSaving(false);
+            }, 300)
+          );
     }
   };
 
@@ -124,7 +132,9 @@ function PaymentsContainer({
       </p>
       <br />
       <p>
-        <button onClick={savePayments}>GUARDAR</button>
+        <button onClick={savePayments}>
+          {!saving ? 'Guardar' : 'Guardando...'}
+        </button>
       </p>
       <br />
       <div>

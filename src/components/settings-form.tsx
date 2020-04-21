@@ -80,7 +80,7 @@ export default function SettingsForm({
         />
       </p>
       <button id={'save-settings'} type="submit" onClick={saveSettings}>
-        {saving === false ? 'Guardar' : 'Guardando...'}
+        {!saving ? 'Guardar' : 'Guardando...'}
       </button>
     </form>
   );
