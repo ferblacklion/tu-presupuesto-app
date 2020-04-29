@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Presupuesto Facil</title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap">
+	<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+	<div class="header">
+		<div class="container">
+			<div class="header-content">
+				<div class="header-title header-title-center">Presupuesto Facil APP</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="content login">
+		<div class="container">
+      <a href="/" class="btn"><span><svg><use xlink:href="#user" /></svg> Ingresar</span></a>
+		</div>
+  </div>
+
+  <div class="copy">
+    <p>©2020 Presupuesto Facil APP, Inc. All Rights Reserved.</p>
+  </div>
+
+	<svg xmlns="http://www.w3.org/2000/svg" style="display: block; width: 0; height: 0; opacity: 0;">
+		<symbol id="user" viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+			<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
+		</symbol>
+  </svg>
+  
+  <script type="text/javascript">
+		var deleteIcon = document.querySelectorAll( '[delete]' ),
+		modalButtons = document.querySelectorAll( '.modal .btn' ),
+		modalMask = document.querySelectorAll( '.modal-mask' ),
+		addButton = document.getElementById( 'add' );
+
+		function hideModal() {
+			var modal = document.querySelectorAll( '.modal' );
+			Array.prototype.forEach.call( modal, function( el, i ) {
+				el.classList.remove( 'modal--open' );
+			});
+		}
+		function showModal( elem ) {
+			document.querySelector( elem ).classList.add( 'modal--open' );
+		}
+
+		Array.prototype.forEach.call( deleteIcon, function( el, i ) {
+			el.addEventListener( 'click', function( event ) {
+				showModal( '.modal-delete' );
+			})
+		});
+
+		Array.prototype.forEach.call( modalButtons, function( el, i ) {
+			el.addEventListener( 'click', function( event ) {
+				hideModal();
+			})
+		});
+
+		Array.prototype.forEach.call( modalMask, function( el, i ) {
+			el.addEventListener( 'click', function( event ) {
+				hideModal();
+			})
+		});
+
+		addButton.addEventListener( 'click', function() {
+			showModal( '.modal-add' );
+		});
+	</script>
+</body>
+</html>

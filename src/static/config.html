@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Presupuesto Facil</title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap">
+	<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+	<div class="header">
+		<div class="container">
+			<div class="header-content">
+				<div class="header-left">
+          <a href="/">
+            <svg><use xlink:href="#arrow-back" /></svg>
+          </a>
+				</div>
+				<div class="header-title">Configuración</div>
+				<div class="header-right">
+					<div class="profile-picture">
+						<img src="assets/img/profile.png" alt="Julio Palencia">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="content config">
+		<div class="container">
+      <div class="box box-p">
+        <p>Configura el día paral el reinicio de tu presupuesto mensual y el monto total.</p>
+      </div>
+      <div class="box box-p">
+        <div class="input input-icon">
+          <label for="fecha-corte">Fecha de Corte</label>
+          <svg><use xlink:href="#calendar" /></svg>
+          <input type="date" id="fecha-corte" value="2020-04-30">
+        </div>
+        <div class="input input-icon">
+          <label for="monto-total">Monto Total</label>
+          <svg><use xlink:href="#dollar" /></svg>
+          <input type="tel" id="monto-total" value="Q 1,000">
+        </div>
+      </div>
+      <span class="btn" id="add"><span><svg><use xlink:href="#plus" /></svg> Agregar Gasto Predeterminado</span></span>
+      <div class="box">
+        <div class="box-header">
+					<p class="text text-extrabold text-lg text-up text-blue">Gastos Predeterminados</p>
+        </div>
+        <div class="box-content">
+          <ul>
+            <li>
+              <span><strong>Electricidad</strong></span>
+							<span>Q 100 <svg delete><use xlink:href="#delete" /></svg></span>
+            </li>
+            <li>
+              <span><strong>Linea Teléfonica</strong></span>
+							<span>Q 100 <svg delete><use xlink:href="#delete" /></svg></span>
+            </li>
+            <li>
+              <span><strong>Agua</strong></span>
+							<span>Q 100 <svg delete><use xlink:href="#delete" /></svg></span>
+            </li>
+            <li>
+              <span><strong>Internet</strong></span>
+							<span>Q 100 <svg delete><use xlink:href="#delete" /></svg></span>
+            </li>
+            <li>
+              <span><strong>Gasolina</strong></span>
+							<span>Q 100 <svg delete><use xlink:href="#delete" /></svg></span>
+            </li>
+            <li>
+              <span><strong>Comida</strong></span>
+							<span>Q 100 <svg delete><use xlink:href="#delete" /></svg></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <a href="/login.html" class="btn btn-red"><span>Cerrar Sesión</span></a>
+		</div>
+	</div>
+	
+	<div class="copy">
+    <p>©2020 Presupuesto Facil APP, Inc. All Rights Reserved.</p>
+  </div>
+  
+  <div class="modal modal-delete">
+		<div>
+			<div class="modal-mask"></div>
+			<div class="modal-box box">
+				<p class="text text-red">¿Eliminar gasto seleccionado?</p>
+				<p>
+					<span><strong>Nombre de Gasto</strong></span>
+					<span>Q 100</span>
+				</p>
+
+				<div>
+					<button class="btn btn-red"><span>Eliminar</span></button>
+					<button class="btn"><span>Cancelar</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal modal-add">
+		<div>
+			<div class="modal-mask"></div>
+			<div class="modal-box box">
+				<p class="text text-bold text-blue">Agregar Gasto Predeterminado</p>
+				<div class="input">
+					<label for="nombre-gasto">Nombre del Gasto</label>
+					<input type="text" id="nombre-gasto" />
+				</div>
+				<div class="input">
+					<label for="cantidad">Cantidad</label>
+					<input type="tel" id="cantidad" />
+				</div>
+				<div class="btns">
+					<button class="btn btn-red"><span>Cancelar</span></button>
+					<button class="btn"><span>Agregar</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<svg xmlns="http://www.w3.org/2000/svg" style="display: block; width: 0; height: 0; opacity: 0;">
+		<symbol id="plus" viewBox="0 0 16 16">
+			<g transform="translate(-4 -4)">
+				<line y2="14" transform="translate(12 5)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+				<line x2="14" transform="translate(5 12)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+			</g>
+		</symbol>
+		<symbol id="delete" viewBox="0 0 24 24" fill="none" stroke="#0841a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+			<polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line>
+    </symbol>
+    <symbol id="arrow-back" viewBox="0 0 16 16.828">
+      <g transform="translate(-4 -3.586)">
+        <line x1="14" transform="translate(5 12)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        <path d="M12,19,5,12l7-7" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </g>
+    </symbol>
+    <symbol id="calendar" viewBox="0 0 20 22">
+      <g transform="translate(-2 -1)">
+        <rect width="18" height="18" rx="2" transform="translate(3 4)" stroke-width="2" stroke="#0841a6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <line y2="4" transform="translate(16 2)" fill="none" stroke="#0841a6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        <line y2="4" transform="translate(8 2)" fill="none" stroke="#0841a6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        <line x2="18" transform="translate(3 10)" fill="none" stroke="#0841a6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </g>
+    </symbol>
+    <symbol id="dollar" viewBox="0 0 15 25">
+      <g transform="translate(-4.5 0.5)">
+        <line y2="22" transform="translate(12 1)" fill="none" stroke="#0841a6" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        <path d="M17,5H9.5a3.5,3.5,0,0,0,0,7h5a3.5,3.5,0,1,1,0,7H6" fill="none" stroke="#0841a6" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+      </g>
+    </symbol>
+  </svg>
+  
+  <script type="text/javascript">
+		var deleteIcon = document.querySelectorAll( '[delete]' ),
+		modalButtons = document.querySelectorAll( '.modal .btn' ),
+		modalMask = document.querySelectorAll( '.modal-mask' ),
+		addButton = document.getElementById( 'add' );
+
+		function hideModal() {
+			var modal = document.querySelectorAll( '.modal' );
+			Array.prototype.forEach.call( modal, function( el, i ) {
+				el.classList.remove( 'modal--open' );
+			});
+		}
+		function showModal( elem ) {
+			document.querySelector( elem ).classList.add( 'modal--open' );
+		}
+
+		Array.prototype.forEach.call( deleteIcon, function( el, i ) {
+			el.addEventListener( 'click', function( event ) {
+				showModal( '.modal-delete' );
+			})
+		});
+
+		Array.prototype.forEach.call( modalButtons, function( el, i ) {
+			el.addEventListener( 'click', function( event ) {
+				hideModal();
+			})
+		});
+
+		Array.prototype.forEach.call( modalMask, function( el, i ) {
+			el.addEventListener( 'click', function( event ) {
+				hideModal();
+			})
+		});
+
+		addButton.addEventListener( 'click', function() {
+			showModal( '.modal-add' );
+		});
+	</script>
+</body>
+</html>

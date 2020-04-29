@@ -10,10 +10,12 @@ import {
 import PaymentsStatus from '../components/payments-status';
 import { getSettingsAction } from '../redux/settings-duck';
 import PaymentsContainer from '../components/payments-container';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { IHomePageProps } from '../definition';
-import { ROUTES } from '../routes';
 import UserInfo from '../components/user-info';
+import Svgs from '../components/svgs';
+import Footer from '../components/footer';
+import { notify } from '../components/notify';
 
 export function HomePage({
   user,
@@ -53,9 +55,7 @@ export function HomePage({
       settings.success === true &&
       (settings.cutOffDate === 0 || settings.totalAmount === 0)
     ) {
-      alert(
-        'Debes de configurar tu fecha de corte y presupuesto antes de utilizar la app.'
-      );
+      notify();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.success]);
@@ -63,24 +63,27 @@ export function HomePage({
   if (!user) return <Redirect to={'/'} />;
 
   return (
-    <div>
+    <>
       <UserInfo user={user} />
-      <h2>Menu:</h2>
-      <p>
-        <Link to={ROUTES.SETTINGS}>Settings</Link>
-      </p>
-      <PaymentsContainer
-        title={'Agregar gastos'}
-        user={user}
-        payments={payments}
-        settings={settings}
-        deletePaymentsAction={deletePaymentsAction}
-        savePaymentAction={savePaymentAction}
-        getPaymentsAction={getPaymentsAction}
-        getPaymentsDefaultAction={getPaymentsDefaultAction}
-      />
-      <PaymentsStatus settings={settings} payments={payments} />
-    </div>
+      <div className="content">
+        <div className="container">
+          <PaymentsStatus settings={settings} payments={payments} />
+          <PaymentsContainer
+            title={'Gastos Recientes'}
+            user={user}
+            payments={payments}
+            settings={settings}
+            deletePaymentsAction={deletePaymentsAction}
+            savePaymentAction={savePaymentAction}
+            getPaymentsAction={getPaymentsAction}
+            getPaymentsDefaultAction={getPaymentsDefaultAction}
+          />
+          <Footer />
+        </div>
+      </div>
+
+      <Svgs />
+    </>
   );
 }
 

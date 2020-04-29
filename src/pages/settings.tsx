@@ -14,6 +14,9 @@ import logout from '../utils/logout';
 import { ISettingsPageProps } from '../definition';
 import { ROUTES } from '../routes';
 import SettingsForm from '../components/settings-form';
+import Svgs from '../components/svgs';
+import Footer from '../components/footer';
+import { notify } from '../components/notify';
 
 export const SettingsPage = ({
   user,
@@ -52,40 +55,76 @@ export const SettingsPage = ({
     }
   };
 
+  useEffect(() => {
+    if (
+      settings.success === true &&
+      (settings.cutOffDate === 0 || settings.totalAmount === 0)
+    ) {
+      notify();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings.success]);
+
   if (!user) return <Redirect to={ROUTES.LOGIN} />;
 
   return (
-    <div>
-      <h2>Menu</h2>
+    <>
+      <div className="header">
+        <div className="container">
+          <div className="header-content">
+            <div className="header-left">
+              <Link to={ROUTES.HOME}>
+                <svg>
+                  <use xlinkHref="#arrow-back" />
+                </svg>
+              </Link>
+            </div>
+            <div className="header-title">Configuración</div>
+            <div className="header-right">
+              <div className="profile-picture">
+                <img src={`${user.photoURL}`} alt={`${user.displayName}`} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="content config">
+        <div className="container">
+          <div className="box box-p">
+            <p>
+              Configura el día paral el reinicio de tu presupuesto mensual y el
+              monto total.
+            </p>
+          </div>
 
-      <Link to={ROUTES.HOME}>Inicio</Link>
-      <p>
-        <a onClick={logout} href={ROUTES.LOGOUT}>
-          Logout
-        </a>
-      </p>
+          {settings.success && (
+            <SettingsForm
+              settings={settings}
+              onSubmit={saveUserSettings}
+              saving={savingSettings}
+            />
+          )}
+          <PaymentsContainer
+            title={'Agregar gastos predeterminados:'}
+            user={user}
+            payments={payments}
+            isDefaultData={true}
+            settings={settings}
+            deletePaymentsAction={deletePaymentsAction}
+            savePaymentAction={savePaymentAction}
+            getPaymentsAction={getPaymentsAction}
+            getPaymentsDefaultAction={getPaymentsDefaultAction}
+          />
+          <a onClick={logout} href="/log-out/" className="btn btn-red">
+            <span>Cerrar Sesión</span>
+          </a>
+        </div>
+      </div>
 
-      <h1>Configuraciones</h1>
+      <Footer />
 
-      {settings.success && (
-        <SettingsForm
-          settings={settings}
-          onSubmit={saveUserSettings}
-          saving={savingSettings}
-        />
-      )}
-      <PaymentsContainer
-        title={'Agregar gastos predeterminados:'}
-        user={user}
-        payments={payments}
-        isDefaultData={true}
-        settings={settings}
-        deletePaymentsAction={deletePaymentsAction}
-        savePaymentAction={savePaymentAction}
-        getPaymentsAction={getPaymentsAction}
-        getPaymentsDefaultAction={getPaymentsDefaultAction}
-      />
-    </div>
+      <Svgs />
+    </>
   );
 };
 

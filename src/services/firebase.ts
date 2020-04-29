@@ -184,8 +184,8 @@ export function getUserPaymentService(
     return Promise.reject(Error(error));
   }
 
-  console.log('startDate', startDate);
-  console.log('endDate', endDate);
+  if (debug_query) console.log('startDate', startDate);
+  if (debug_query) console.log('endDate', endDate);
 
   const startFullDate = firebase.firestore.Timestamp.fromDate(startDate);
   const endFullDate = firebase.firestore.Timestamp.fromDate(endDate);

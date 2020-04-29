@@ -44,7 +44,7 @@ export default function SettingsForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings]);
 
-  const saveSettings = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const saveSettings = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     const totalAmount = Number(totalAmountElement.state.numAsString);
     const cutOffDate = Number(inputCutOffDate.state.value);
@@ -53,34 +53,44 @@ export default function SettingsForm({
 
   return (
     <form id={'save-settings-form'}>
-      <p>
-        <label htmlFor="">Fecha corte:</label>
-        <NumberFormat
-          ref={(inst: NumberFormat) => (inputCutOffDate = inst)}
-          name="cut-off-date"
-          minLength={2}
-          value={state.cutOffDate}
-          inputMode={'numeric'}
-          decimalSeparator={'false'}
-          onValueChange={cutOffDateOnValueChange}
-        />
-      </p>
-      <p>
-        <label htmlFor="">Monto total:</label>
+      <div className="box box-p">
+        <div className="input input-icon">
+          <label htmlFor="fecha-corte">Fecha de Corte</label>
+          <svg>
+            <use xlinkHref="#calendar" />
+          </svg>
+          {/* <input type="date" id="fecha-corte" value="2020-04-30"> */}
+          <NumberFormat
+            ref={(inst: NumberFormat) => (inputCutOffDate = inst)}
+            name="cut-off-date"
+            minLength={2}
+            value={state.cutOffDate}
+            inputMode={'numeric'}
+            decimalSeparator={'false'}
+            onValueChange={cutOffDateOnValueChange}
+          />
+        </div>
+        <div className="input input-icon">
+          <label htmlFor="monto-total">Monto Total</label>
+          <svg>
+            <use xlinkHref="#dollar" />
+          </svg>
+          {/* <input type="tel" id="monto-total" value="Q 1,000" /> */}
+          <NumberFormat
+            ref={(el: NumberFormat) => (totalAmountElement = el)}
+            decimalScale={2}
+            thousandSeparator={true}
+            id="total-amount"
+            prefix={'Q'}
+            value={state.totalAmount}
+            inputMode={'decimal'}
+            allowNegative={false}
+          />
+        </div>
+      </div>
 
-        <NumberFormat
-          ref={(el: NumberFormat) => (totalAmountElement = el)}
-          decimalScale={2}
-          thousandSeparator={true}
-          id="total-amount"
-          prefix={'Q'}
-          value={state.totalAmount}
-          inputMode={'decimal'}
-          allowNegative={false}
-        />
-      </p>
-      <button id={'save-settings'} type="submit" onClick={saveSettings}>
-        {!saving ? 'Guardar' : 'Guardando...'}
+      <button id={'save-settings'} onClick={saveSettings} className="btn">
+        <span>{!saving ? 'Guardar' : 'Guardando...'}</span>
       </button>
     </form>
   );

@@ -16,24 +16,64 @@ function PaymentsStatus({ settings, payments }: IPaymentsStatus) {
       : 0;
 
   return (
-    <div>
-      <h2>Estados</h2>
-      <div>
-        Presupuesto total:{' '}
-        <span id={'total-amount'}>
-          {' '}
-          {formatCurrency(settings.totalAmount)}{' '}
-        </span>
-      </div>
-      <div>
-        Saldo restante:{' '}
-        <span id={'total-rest'}>
-          {formatCurrency(settings.totalAmount - total)}
-        </span>
-      </div>
-      <div>---------------------------------------</div>
-      <div>
-        Gastos: <span id={'total-payments'}>{formatCurrency(total)}</span>
+    <div className="slide">
+      <div className="slide-content">
+        <div className="slide-box">
+          <div className="box">
+            <div className="col">
+              <svg className="icon">
+                <use xlinkHref="#tag" />
+              </svg>
+              <div>
+                <p className="text text-sm text-light text-up text-bold">
+                  Gastos
+                </p>
+                <p
+                  id={'total-payments'}
+                  className="text text-xl text-dark text-extrabold amount"
+                >
+                  {formatCurrency(total)}
+                </p>
+              </div>
+            </div>
+            <div className="col">
+              <svg className="icon">
+                <use xlinkHref="#wallet" />
+              </svg>
+              <div>
+                <p className="text text-sm text-light text-up text-bold">
+                  Restante
+                </p>
+                <p
+                  id={'total-rest'}
+                  className="text text-xl text-dark text-extrabold amount"
+                >
+                  {formatCurrency(settings.totalAmount - total)}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="slide-box">
+          <div className="box">
+            <div className="col">
+              <svg className="icon">
+                <use xlinkHref="#bookmark" />
+              </svg>
+              <div>
+                <p className="text text-sm text-light text-up text-bold">
+                  Presupuesto Total
+                </p>
+                <p
+                  id={'total-amount'}
+                  className="text text-xl text-dark text-extrabold amount"
+                >
+                  {formatCurrency(settings.totalAmount)}{' '}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
