@@ -10,6 +10,7 @@ import initialState from './redux/initialState';
 import './static/assets/css/style.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
+import ReactGA from 'react-ga';
 
 toast.configure({
   autoClose: 5000,
@@ -17,6 +18,11 @@ toast.configure({
 });
 
 const store = generateStore(initialState);
+
+if (process.env.NODE_ENV !== 'development') {
+  ReactGA.initialize('UA-51324591-2');
+  ReactGA.pageview(window.location.pathname + window.location.search);
+}
 
 const WithStore = () => (
   <Provider store={store}>
