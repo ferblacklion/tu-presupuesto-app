@@ -189,6 +189,27 @@ export default function Svgs() {
             />
           </g>
         </symbol>
+        <symbol id="dollar" viewBox="0 0 15 25">
+          <g transform="translate(-4.5 0.5)">
+            <line
+              y2="22"
+              transform="translate(12 1)"
+              fill="none"
+              stroke="#0841a6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="3"
+            />
+            <path
+              d="M17,5H9.5a3.5,3.5,0,0,0,0,7h5a3.5,3.5,0,1,1,0,7H6"
+              fill="none"
+              stroke="#0841a6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="3"
+            />
+          </g>
+        </symbol>
       </svg>
     </>
   );
