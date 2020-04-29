@@ -134,10 +134,7 @@ function PaymentsContainer({
 
   const showDeleteModal = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    console.log('close');
-
     const id = e.currentTarget.getAttribute('data-id') || '';
-
     const payment = payments.payments.filter(p => p.id === id).shift();
 
     if (id && payment) {

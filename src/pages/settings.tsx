@@ -17,6 +17,8 @@ import SettingsForm from '../components/settings-form';
 import Svgs from '../components/svgs';
 import Footer from '../components/footer';
 import { notify } from '../components/notify';
+import Header from '../components/header';
+import ProfilePicture from '../components/profile-picture';
 
 export const SettingsPage = ({
   user,
@@ -69,25 +71,23 @@ export const SettingsPage = ({
 
   return (
     <>
-      <div className="header">
-        <div className="container">
-          <div className="header-content">
-            <div className="header-left">
-              <Link to={ROUTES.HOME}>
-                <svg>
-                  <use xlinkHref="#arrow-back" />
-                </svg>
-              </Link>
-            </div>
-            <div className="header-title">Configuración</div>
-            <div className="header-right">
-              <div className="profile-picture">
-                <img src={`${user.photoURL}`} alt={`${user.displayName}`} />
-              </div>
-            </div>
-          </div>
+      <Header>
+        <div className="header-left">
+          <Link to={ROUTES.HOME}>
+            <svg>
+              <use xlinkHref="#arrow-back" />
+            </svg>
+          </Link>
         </div>
-      </div>
+        <div className="header-title">Configuración</div>
+        <div className="header-right">
+          <ProfilePicture
+            photoURL={`${user.photoURL}`}
+            displayName={`${user.displayName}`}
+          />
+        </div>
+      </Header>
+
       <div className="content config">
         <div className="container">
           <div className="box box-p">
@@ -105,7 +105,7 @@ export const SettingsPage = ({
             />
           )}
           <PaymentsContainer
-            title={'Agregar gastos predeterminados:'}
+            title={'Gastos Fijos'}
             user={user}
             payments={payments}
             isDefaultData={true}

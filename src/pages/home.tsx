@@ -12,10 +12,11 @@ import { getSettingsAction } from '../redux/settings-duck';
 import PaymentsContainer from '../components/payments-container';
 import { Redirect } from 'react-router-dom';
 import { IHomePageProps } from '../definition';
-import UserInfo from '../components/user-info';
+import HeaderHome from '../components/header-home';
 import Svgs from '../components/svgs';
 import Footer from '../components/footer';
 import { notify } from '../components/notify';
+import Header from '../components/header';
 
 export function HomePage({
   user,
@@ -64,7 +65,9 @@ export function HomePage({
 
   return (
     <>
-      <UserInfo user={user} />
+      <Header>
+        <HeaderHome user={user} />
+      </Header>
       <div className="content">
         <div className="container">
           <PaymentsStatus settings={settings} payments={payments} />
@@ -81,7 +84,6 @@ export function HomePage({
           <Footer />
         </div>
       </div>
-
       <Svgs />
     </>
   );

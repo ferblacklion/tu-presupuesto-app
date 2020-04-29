@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <div className="copy">
       <p>
-        ©{new Date().getFullYear()} Presupuesto Facil APP, Inc. All Rights
+        ©{new Date().getFullYear()} Presupuesto Fácil APP, Inc. All Rights
         Reserved.
       </p>
     </div>

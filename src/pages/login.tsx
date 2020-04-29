@@ -6,6 +6,7 @@ import { Redirect } from 'react-router-dom';
 import { ILogin } from '../definition';
 import { ROUTES } from '../routes';
 import Footer from '../components/footer';
+import Header from '../components/header';
 
 function Login({ user, loginUserAction }: ILogin) {
   const login = (e: React.MouseEvent) => {
@@ -19,15 +20,11 @@ function Login({ user, loginUserAction }: ILogin) {
 
   return (
     <>
-      <div className="header">
-        <div className="container">
-          <div className="header-content">
-            <div className="header-title header-title-center">
-              Tu Presupuesto Fácil
-            </div>
-          </div>
+      <Header>
+        <div className="header-title header-title-center">
+          Tu Presupuesto Fácil
         </div>
-      </div>
+      </Header>
 
       <div className="content login">
         <div className="container">
