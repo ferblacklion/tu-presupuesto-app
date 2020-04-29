@@ -92,7 +92,7 @@ export const SettingsPage = ({
         <div className="container">
           <div className="box box-p">
             <p>
-              Configura el día paral el reinicio de tu presupuesto mensual y el
+              Configura el día para el reinicio de tu presupuesto mensual y el
               monto total.
             </p>
           </div>

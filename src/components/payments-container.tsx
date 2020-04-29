@@ -177,7 +177,7 @@ function PaymentsContainer({
         </div>
         <div className="box-content">
           <ul id={'payments-list'}>
-            {payments.payments.map((p, i: number) => (
+            {payments.payments.map(p => (
               <li key={p.id}>
                 <span>
                   <strong>{p.name}</strong>{' '}

@@ -32,18 +32,21 @@ function render(args?: any) {
   const payments: IPayments = {
     payments: [
       {
+        id: '1',
         cost: 250,
         name: 'test 1',
         isDefault: false,
         datetime: firebase.firestore.Timestamp.fromDate(new Date())
       },
       {
+        id: '2',
         cost: 250,
         name: 'test 2',
         isDefault: false,
         datetime: firebase.firestore.Timestamp.fromDate(new Date())
       },
       {
+        id: '3',
         cost: 250,
         name: 'test 2',
         isDefault: false,
