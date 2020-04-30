@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import NumberFormat, { NumberFormatValues } from 'react-number-format';
 import initialState from '../redux/initialState';
 import { ISettingsFormProps } from '../definition';
+import { FaRegMoneyBillAlt } from 'react-icons/fa';
 
 export default function SettingsForm({
   onSubmit,
@@ -59,7 +60,6 @@ export default function SettingsForm({
           <svg>
             <use xlinkHref="#calendar" />
           </svg>
-          {/* <input type="date" id="fecha-corte" value="2020-04-30"> */}
           <NumberFormat
             ref={(inst: NumberFormat) => (inputCutOffDate = inst)}
             name="cut-off-date"
@@ -72,10 +72,7 @@ export default function SettingsForm({
         </div>
         <div className="input input-icon">
           <label htmlFor="monto-total">Monto Total</label>
-          <svg>
-            <use xlinkHref="#dollar" />
-          </svg>
-          {/* <input type="tel" id="monto-total" value="Q 1,000" /> */}
+          <FaRegMoneyBillAlt color={'#0841a6'} />
           <NumberFormat
             ref={(el: NumberFormat) => (totalAmountElement = el)}
             decimalScale={2}

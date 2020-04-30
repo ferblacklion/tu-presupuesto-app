@@ -25,6 +25,11 @@ body {
   margin: 0 auto;
   padding: 0 30px;
 }
+@media screen and (max-width: 374px) {
+  .container {
+    padding: 0 15px;
+  }
+}
 .header {
   overflow: hidden;
   min-height: 130px;
@@ -119,6 +124,11 @@ body {
   scroll-snap-type: x mandatory;
   scroll-snap-stop: always;
 }
+@media screen and (max-width: 374px) {
+  .slide {
+    margin: 0 -15px;
+  }
+}
 @media screen and (min-width: 600px) {
   .slide {
     margin: 0;
@@ -139,6 +149,11 @@ body {
   display: flex;
   width: calc(200% - 50px);
 }
+@media screen and (max-width: 374px) {
+  .slide-content {
+    width: calc(200% - 20px);
+  }
+}
 @media screen and (min-width: 600px) {
   .slide-content {
     width: 100%;
@@ -151,6 +166,11 @@ body {
   scroll-snap-align: start;
   width: 50%;
   padding: 0 30px;
+}
+@media screen and (max-width: 374px) {
+  .slide-box {
+    padding: 0 15px;
+  }
 }
 .slide-box:first-child {
   padding-right: 0px;
@@ -219,6 +239,11 @@ body {
 .box .col .amount {
   margin-top: -6px;
   margin-bottom: -3px;
+}
+@media screen and (max-width: 374px) {
+  .box .col .amount {
+    margin-top: -3px;
+  }
 }
 .box-header {
   height: 54px;
@@ -325,6 +350,11 @@ body {
 .text-xl {
   font-size: 22px;
   letter-spacing: -1px;
+}
+@media screen and (max-width: 374px) {
+  .text-xl {
+    font-size: 18px;
+  }
 }
 .text-light {
   color: #929292;

@@ -189,25 +189,39 @@ export default function Svgs() {
             />
           </g>
         </symbol>
-        <symbol id="dollar" viewBox="0 0 15 25">
-          <g transform="translate(-4.5 0.5)">
-            <line
-              y2="22"
-              transform="translate(12 1)"
-              fill="none"
-              stroke="#0841a6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="3"
-            />
-            <path
-              d="M17,5H9.5a3.5,3.5,0,0,0,0,7h5a3.5,3.5,0,1,1,0,7H6"
-              fill="none"
-              stroke="#0841a6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="3"
-            />
+        <symbol id="dollar" viewBox="0 0 19 20.9">
+          <g transform="translate(-578.5 -290.5)">
+            <g transform="translate(600.5 310.9) rotate(180)">
+              <path
+                d="M-437.98-150.988l-2.979,1.787.56-4.22a7.179,7.179,0,0,1-5.6-6.68c0-3.866,3.582-7,8-7s8,3.135,8,7a7.172,7.172,0,0,1-5.561,6.669L-435-149.2Z"
+                transform="translate(450.5 168.1)"
+                fill="none"
+                stroke="#0841a6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+              />
+            </g>
+            <g transform="translate(580 297.879)">
+              <line
+                y2="7"
+                transform="translate(8 1.121)"
+                fill="none"
+                stroke="#0841a6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+              />
+              <path
+                d="M9.5,5H7.113a1.113,1.113,0,1,0,0,2.225H8.7a1.113,1.113,0,1,1,0,2.225H6"
+                transform="translate(0 -2.601)"
+                fill="none"
+                stroke="#0841a6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+              />
+            </g>
           </g>
         </symbol>
       </svg>
