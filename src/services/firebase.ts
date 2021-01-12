@@ -147,6 +147,7 @@ export function getUserPaymentService(
   if (debug_query) console.log('isPassedDate', isPassedDate);
 
   const startMonth = isPassedDate ? month : month - 1; // is passed current month
+
   const endMonth = isPassedDate ? month + 1 : month; // is passed next month
 
   if (validateDates.includes(startDateCutOffDate)) {
@@ -170,7 +171,9 @@ export function getUserPaymentService(
 
   try {
     startDate = moment(
-      `${year}-${startMonth}-${startDateCutOffDate}`,
+      `${startMonth === 0 ? year - 1 : year}-${
+        startMonth === 0 ? 12 : startMonth
+      }-${startDateCutOffDate}`,
       'YYYY-MM-DD'
     )
       .endOf('day')

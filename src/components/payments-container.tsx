@@ -83,9 +83,18 @@ function PaymentsContainer({
             setFormData({ name: '', cost: '' });
 
             if (user.uid) {
-              getPaymentsDefaultAction(user.uid);
+              getPaymentsDefaultAction(user.uid).catch((err: any) => {
+                console.log(err);
+                alert('Error al obtener los gastos!');
+              });
+
               if (!isDefaultData)
-                getPaymentsAction(user.uid, settings.cutOffDate);
+                getPaymentsAction(user.uid, settings.cutOffDate).catch(
+                  (err: any) => {
+                    alert('Error al obtener los gastos!');
+                    console.log(err);
+                  }
+                );
             }
           })
           .then(() =>
