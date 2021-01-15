@@ -7,6 +7,7 @@ import {
 } from '../services/firebase';
 import { initialPaymentState } from './initialState';
 import { IPayment, IPayments } from '../definition/IPayment';
+import { rejects } from 'assert';
 
 /**
  * CONSTANTS
@@ -105,19 +106,23 @@ export const getPaymentsDefaultAction = (userId: string) => (
 export const getPaymentsAction = (userId: string, cutOffDate: number) => (
   dispatch: Dispatch
 ) => {
-  return getUserPaymentService(userId, cutOffDate)
-    .then(res => {
-      const payments: IPayments =
-        res !== undefined && Object.keys(res).length > 0
-          ? res
-          : { payments: [] };
+  try {
+    return getUserPaymentService(userId, cutOffDate)
+      .then(res => {
+        const payments: IPayments =
+          res !== undefined && Object.keys(res).length > 0
+            ? res
+            : { payments: [] };
 
-      //console.log('get payments actions  --- ', payments);
-      dispatch({ type: GET_PAYMENT, payload: payments });
-    })
-    .catch(e => {
-      console.log(e.message);
-    });
+        //console.log('get payments actions  --- ', payments);
+        dispatch({ type: GET_PAYMENT, payload: payments });
+      })
+      .catch(e => {
+        throw e;
+      });
+  } catch (error) {
+    throw new Error(error.message); // rejects the promise
+  }
 };
 
 export const deletePaymentsAction = (paymentId: string, userId = '') => (

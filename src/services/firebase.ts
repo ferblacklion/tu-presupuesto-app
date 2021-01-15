@@ -166,32 +166,39 @@ export function getUserPaymentService(
   if (debug_query) console.log('startDateCutOffDate', startDateCutOffDate);
   if (debug_query) console.log('endDateCutOffDate', endDateCutOffDate);
 
-  let startDate: Date;
-  let endDate: Date;
+  const startDate = moment(
+    `${startMonth === 0 ? year - 1 : year}-${
+      startMonth === 0 ? 12 : startMonth
+    }-${startDateCutOffDate}`,
+    'YYYY-MM-DD'
+  )
+    .endOf('day')
+    .toDate();
 
-  try {
-    startDate = moment(
-      `${startMonth === 0 ? year - 1 : year}-${
-        startMonth === 0 ? 12 : startMonth
-      }-${startDateCutOffDate}`,
-      'YYYY-MM-DD'
-    )
-      .endOf('day')
-      .toDate();
-
-    endDate = moment(`${year}-${endMonth}-${endDateCutOffDate}`, 'YYYY-MM-DD')
-      .endOf('day')
-      .toDate();
-  } catch (error) {
-    console.log(error);
-    return Promise.reject(Error(error));
-  }
+  const endDate = moment(
+    `${year}-${endMonth}-${endDateCutOffDate}`,
+    'YYYY-MM-DD'
+  )
+    .endOf('day')
+    .toDate();
 
   if (debug_query) console.log('startDate', startDate);
   if (debug_query) console.log('endDate', endDate);
 
   const startFullDate = firebase.firestore.Timestamp.fromDate(startDate);
   const endFullDate = firebase.firestore.Timestamp.fromDate(endDate);
+  console.log(startFullDate);
+
+  if (
+    !startFullDate ||
+    !endFullDate ||
+    !(
+      moment(startFullDate.seconds).isValid() &&
+      moment(endFullDate.seconds).isValid()
+    )
+  ) {
+    throw new Error('Invalid datetime');
+  }
 
   const query = db
     .collection(

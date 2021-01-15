@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { RootState } from '../redux/store';
 import {
@@ -17,6 +17,7 @@ import Svgs from '../components/svgs';
 import Footer from '../components/footer';
 import { notify } from '../components/notify';
 import Header from '../components/header';
+import { isTypeReferenceNode } from 'typescript';
 
 export function HomePage({
   user,
@@ -28,6 +29,7 @@ export function HomePage({
   deletePaymentsAction,
   savePaymentAction
 }: IHomePageProps) {
+  const [HasError, setHasError] = useState(false);
   useEffect(() => {
     if (user && user.uid) {
       if (!settings.success) {
@@ -46,7 +48,17 @@ export function HomePage({
 
   useEffect(() => {
     if (user && user.uid && settings.cutOffDate > 0) {
-      getPaymentsAction(user.uid, settings.cutOffDate);
+      try {
+        getPaymentsAction(user.uid, settings.cutOffDate).catch(e => {
+          console.log('error action ' + e);
+
+          setHasError(true);
+        });
+      } catch (error) {
+        console.log(error);
+
+        setHasError(true);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.uid, settings.cutOffDate]);
@@ -68,22 +80,26 @@ export function HomePage({
       <Header>
         <HeaderHome user={user} />
       </Header>
-      <div className="content">
-        <div className="container">
-          <PaymentsStatus settings={settings} payments={payments} />
-          <PaymentsContainer
-            title={'Gastos Recientes'}
-            user={user}
-            payments={payments}
-            settings={settings}
-            deletePaymentsAction={deletePaymentsAction}
-            savePaymentAction={savePaymentAction}
-            getPaymentsAction={getPaymentsAction}
-            getPaymentsDefaultAction={getPaymentsDefaultAction}
-          />
-          <Footer />
+      {HasError ? (
+        <h2>Something is wrong!</h2>
+      ) : (
+        <div className="content">
+          <div className="container">
+            <PaymentsStatus settings={settings} payments={payments} />
+            <PaymentsContainer
+              title={'Gastos Recientes'}
+              user={user}
+              payments={payments}
+              settings={settings}
+              deletePaymentsAction={deletePaymentsAction}
+              savePaymentAction={savePaymentAction}
+              getPaymentsAction={getPaymentsAction}
+              getPaymentsDefaultAction={getPaymentsDefaultAction}
+            />
+            <Footer />
+          </div>
         </div>
-      </div>
+      )}
       <Svgs />
     </>
   );
